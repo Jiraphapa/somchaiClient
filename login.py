@@ -8,7 +8,7 @@
 
 from PySide import QtCore, QtGui
 import connector
-import  urllib
+import urllib
 import sys
 
 class Ui_Form(object):
