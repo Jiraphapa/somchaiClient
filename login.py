@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
+import connector
 import  urllib
 import sys
 
@@ -78,6 +79,10 @@ class Ui_Form(object):
         usrname=self.user_entry.text()
         psw=self.password.text()
         #authenticate
+        data= {'username': usrname,'password': psw,}
+        url="http://127.0.0.1:8001/v1/auth/login"
+        connector.post(data,url)
+
 
     def doRegister(self):
         #redirect to register page
