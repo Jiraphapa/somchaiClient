@@ -7,6 +7,6 @@ class Connector:
     def setUrl(self, url):
         self.url = url
 
-    def post(self, data):
+    def post(self, url, data):
         #print(requests.post(url=url,data=data).text)
-        requests.post(url=self.url,data=data)
+        requests.post(url=self.url + url, data=data)
