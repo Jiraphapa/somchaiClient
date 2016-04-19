@@ -10,6 +10,7 @@ from PySide import QtCore, QtGui
 import connector
 import urllib
 import sys
+import json
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -76,17 +77,19 @@ class Ui_Form(object):
         self.title.setText(_translate("Form", "SomChai Secretary App"))
 
     def doLogin(self):
-        usrname=self.user_entry.text()
-        psw=self.password.text()
-        #authenticate
-        data= {'username': usrname,'password': psw,}
-        url="http://127.0.0.1:8001/v1/auth/login"
-        connector.post(data,url)
-
+        c = connector.Connector()
+        username = self.user_entry.text()
+        psw = self.pass_entry.text()
+        print(username)
+        # authenticate
+        data = {'username': username, 'password': psw}
+        url = "Somchai/login"
+        c.post(url, data)
 
     def doRegister(self):
-        #redirect to register page
+        # redirect to register page
         pass
+
 
 def main():
 
