@@ -4,7 +4,7 @@ import sys
 from connector import *
 from PySide import QtCore, QtGui
 
-class Ui_Form(object):
+class Register(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(500, 500)
@@ -188,7 +188,7 @@ def main():
 
     app = QtGui.QApplication(sys.argv)
     w = QtGui.QWidget()
-    ex = Ui_Form()
+    ex = Register()
     ex.setupUi(w)
     w.show()
     return app.exec_()
