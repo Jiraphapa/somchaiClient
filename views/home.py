@@ -5,10 +5,9 @@ import  urllib
 import sys
 
 
-
 import sys
 import time
-from . import help
+
 
 class Home(object):
     def setupUi(self, Form):
@@ -54,7 +53,6 @@ class Home(object):
         font.setFamily("Century Gothic")
         self.help_button.setFont(font)
         self.help_button.setObjectName("help_button")
-        self.help_button.clicked.connect(self.doHelp)
         self.time_label = QtGui.QLabel(Form)
         self.time_label.setGeometry(QtCore.QRect(140, 70, 331, 111))
         #140, 70, 331, 111
@@ -118,23 +116,10 @@ class Home(object):
     def update_value(self):
         self.num += 1
         if self.num > 100:
-            self.num = 0;
+            self.num = 0
         self.time_label.setText(time.strftime("%X"))
 
-    def doHelp(self):
-        w = QtGui.QWidget()
-        ex = help.Ui_Form()
-        ex.setupUi(w)
-        w.show()
-    def doProfile(self):
 
-        pass
-    def doReserve(self):
-        pass
-    def doChat(self):
-        pass
-    def doTodo(self):
-        pass
 
 
 

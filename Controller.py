@@ -1,6 +1,6 @@
 import connector
 from PySide import QtCore, QtGui
-from views import login, home
+from views import login, intruction,home
 import sys
 
 
@@ -26,6 +26,24 @@ class Form2(QtGui.QWidget, home.Home):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.95)
+        self.help_button.clicked.connect(self.doHelp)
+        self.helpWindow=None
+    def doHelp(self):
+        if self.helpWindow is None:
+            self.helpWindow=Form3()
+        self.helpWindow.show()
+class Form3(QtGui.QWidget, intruction.Ui_Form):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.setWindowOpacity(0.9)
+ #dummy need
+class ProfileForm(QtGui.QWidget, intruction.Ui_Form):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.setWindowOpacity(0.95)
+
 
 
 if __name__ == '__main__':
