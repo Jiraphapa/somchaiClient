@@ -11,7 +11,8 @@ class Form1(QtGui.QWidget, login.Ui_Form):
         #self.button1.clicked.connect(self.handleButton)
         self.register_2.clicked.connect(self.handleButton)
         self.window2 = None
-        self.setWindowOpacity(0.95)
+        #self.setWindowOpacity(0.95)
+        self.setStyleSheet("background-color:#121317;");
     def handleButton(self):
         if self.window2 is None:
             self.window2 = Form2()
