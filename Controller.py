@@ -11,7 +11,7 @@ class Form1(QtGui.QWidget, login.Ui_Form):
         #self.button1.clicked.connect(self.handleButton)
         self.register_2.clicked.connect(self.handleButton)
         self.window2 = None
-        #self.setWindowOpacity(0.95)
+        self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;");
     def handleButton(self):
         if self.window2 is None:
@@ -26,7 +26,8 @@ class Form2(QtGui.QWidget, home.Home):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
-        self.setWindowOpacity(0.95)
+        self.setWindowOpacity(0.98)
+        self.setStyleSheet("background-color:#121317;")
         self.help_button.clicked.connect(self.doHelp)
         self.helpWindow=None
     def doHelp(self):
@@ -38,6 +39,7 @@ class Form3(QtGui.QWidget, intruction.Ui_Form):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.9)
+        self.setStyleSheet("background-color:#ffd200;")
  #dummy need
 class ProfileForm(QtGui.QWidget, intruction.Ui_Form):
     def __init__(self, parent=None):
