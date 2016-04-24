@@ -1,9 +1,9 @@
 import connector
 from PySide import QtCore, QtGui
-from views import login, intruction,home,chatOpt
+from views import login, intruction,home,chatOpt,chatRoom
 import sys
 
-
+#login page
 class Form1(QtGui.QWidget, login.Ui_Form):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -21,7 +21,7 @@ class Form1(QtGui.QWidget, login.Ui_Form):
         self.hide()
         #window=Form2()
         #window.show()
-
+#home page
 class Form2(QtGui.QWidget, home.Home):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -40,7 +40,7 @@ class Form2(QtGui.QWidget, home.Home):
          if self.chatopWindow is None:
              self.chatopWindow=ChatOptionForm()
          self.chatopWindow.show()
-
+#help page
 class Form3(QtGui.QWidget, intruction.Ui_Form):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -60,7 +60,20 @@ class ChatOptionForm(QtGui.QWidget, chatOpt.Ui_Form):
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#fe3d50;")
+        self.joinButton.clicked.connect(self.invokeChat)
+        self.chatRoomWindow=None
+      def invokeChat(self):
+          self.hide()
+          if self.chatRoomWindow is None:
+            self.chatRoomWindow=ChatRoomForm()
+          self.chatRoomWindow.show()
 
+class ChatRoomForm(QtGui.QWidget, chatRoom.Ui_Form):
+     def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.setWindowOpacity(0.98)
+        self.setStyleSheet("background-color:#121317;")
 
 if __name__ == '__main__':
 
