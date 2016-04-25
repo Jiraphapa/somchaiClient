@@ -1,6 +1,6 @@
 import connector
 from PySide import QtCore, QtGui
-from views import login, intruction,home,chatOpt,chatRoom
+from views import login, intruction,home,chatOpt,chatRoom,FullTodo,reserveShow,reserveForm
 import sys
 
 #login page
@@ -30,8 +30,19 @@ class Form2(QtGui.QWidget, home.Home):
         self.setStyleSheet("background-color:#121317;")
         self.help_button.clicked.connect(self.doHelp)
         self.chat_button.clicked.connect(self.doChat)
+        self.todo_button.mousePressEvent=self.doTodo
+        self.todo_label.mousePressEvent=self.doTodo
+        self.list_widget.mousePressEvent=self.doTodo
+        self.reserve_button.clicked.connect(self.doReserveShow)
         self.helpWindow=None
         self.chatopWindow=None
+        self.todoWindow=None
+        self.reserveShow=None
+
+    def doReserveShow(self):
+        if self.reserveShow is None:
+            self.reserveShow=ReserveShow()
+        self.reserveShow.show()
     def doHelp(self):
         if self.helpWindow is None:
             self.helpWindow=Form3()
@@ -40,6 +51,10 @@ class Form2(QtGui.QWidget, home.Home):
          if self.chatopWindow is None:
              self.chatopWindow=ChatOptionForm()
          self.chatopWindow.show()
+    def doTodo(self,event):
+        if self.todoWindow is None:
+             self.todoWindow=FullTodoForm()
+        self.todoWindow.show()
 #help page
 class Form3(QtGui.QWidget, intruction.Ui_Form):
     def __init__(self, parent=None):
@@ -75,6 +90,22 @@ class ChatRoomForm(QtGui.QWidget, chatRoom.Ui_Form):
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
 
+class FullTodoForm(QtGui.QWidget,FullTodo.Ui_Form ):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.setWindowOpacity(0.98)
+        self.setStyleSheet("background-color:#121317;")
+class ReserveShow(QtGui.QWidget,reserveShow.Ui_Form ):
+      def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.setWindowOpacity(0.98)
+class ReserveForm(QtGui.QWidget,reserveForm.Ui_Form ):
+     def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.setWindowOpacity(0.98)
 if __name__ == '__main__':
 
     import sys
