@@ -7,18 +7,20 @@
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
+from . import home
 import connector
 import urllib
 import sys
 import json
 
 class Ui_Form(object):
+
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(271, 223)
         self.login = QtGui.QPushButton(Form)
         self.login.setStyleSheet("background-color:#ffd200;")
-        self.login.clicked.connect(self.doLogin)
+
         self.login.setGeometry(QtCore.QRect(80, 140, 111, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
@@ -52,14 +54,8 @@ class Ui_Form(object):
         self.password.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.password.setAlignment(QtCore.Qt.AlignCenter)
         self.password.setObjectName("password")
-        self.register_2 = QtGui.QPushButton(Form)
-        self.register_2.setStyleSheet("color:#ffd200;")
-        self.register_2.clicked.connect(self.doRegister)
-        self.register_2.setGeometry(QtCore.QRect(80, 180, 111, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
-        self.register_2.setFont(font)
-        self.register_2.setObjectName("register_2")
         self.title = QtGui.QLabel(Form)
         self.title.setGeometry(QtCore.QRect(0, 10, 271, 41))
         font = QtGui.QFont()
@@ -79,33 +75,9 @@ class Ui_Form(object):
         self.login.setText(_translate("Form", "Login"))
         self.username.setText(_translate("Form", "Username"))
         self.password.setText(_translate("Form", "Password"))
-        self.register_2.setText(_translate("Form", "Register"))
         self.title.setText(_translate("Form", "SOMCHAI SECRETARY APP"))
         self.title.setStyleSheet("color:white;")
-    def doLogin(self):
-        c = connector.Connector()
-        username = self.user_entry.text()
-        psw = self.pass_entry.text()
-        print(username)
-        # authenticate
-        data = {'username': username, 'password': psw}
-        url = "Somchai/login"
-        c.post(url, data)
-
-    def doRegister(self):
-        # redirect to register page
-        pass
 
 
-def main():
-
-    app = QtGui.QApplication(sys.argv)
-    w = QtGui.QWidget()
-    ex = Ui_Form()
-    ex.setupUi(w)
-    w.show()
-    return app.exec_()
 
 
-if __name__ == '__main__':
-    sys.exit(main())

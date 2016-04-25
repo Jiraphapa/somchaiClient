@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 class Connector:
@@ -10,4 +11,6 @@ class Connector:
 
     def post(self, url, data):
         res = requests.post(self.url+url, data)
-        print(res.text)
+        res = json.dumps(res.text)
+        res = json.loads(res)
+        return res
