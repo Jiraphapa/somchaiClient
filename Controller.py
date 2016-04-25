@@ -74,7 +74,7 @@ class ChatOptionForm(QtGui.QWidget, chatOpt.Ui_Form):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
-        self.setStyleSheet("background-color:#fe3d50;")
+        self.setStyleSheet("background-color:#121317;")
         self.joinButton.clicked.connect(self.invokeChat)
         self.chatRoomWindow=None
       def invokeChat(self):
@@ -101,11 +101,20 @@ class ReserveShow(QtGui.QWidget,reserveShow.Ui_Form ):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
+        self.reserveButton.clicked.connect(self.showForm)
+        self.reserveForm=None
+        self.setStyleSheet("background-color:#121317;")
+      def showForm(self):
+          if self.reserveForm is None:
+             self.reserveForm=ReserveForm()
+          self.reserveForm.show()
+
 class ReserveForm(QtGui.QWidget,reserveForm.Ui_Form ):
      def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
+        self.setStyleSheet("background-color:#f8e71d;")
 if __name__ == '__main__':
 
     import sys

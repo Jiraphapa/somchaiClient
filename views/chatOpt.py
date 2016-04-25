@@ -21,7 +21,7 @@ class Ui_Form(object):
         font.setWeight(75)
         font.setBold(True)
         self.createButton.setFont(font)
-        self.createButton.setStyleSheet("background-color:#121317;color:white;")
+        self.createButton.setStyleSheet("background-color:#fe3d50;color:white;")
         self.createButton.setObjectName("createButton")
         self.joinButton = QtGui.QPushButton(Form)
         self.joinButton.setStyleSheet("background-color:white;color:#121317;")
