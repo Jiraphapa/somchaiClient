@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Downloads/Sample-Ui_V2/reserveForm.ui'
 #
-# Created: Mon Apr 25 15:12:03 2016
+# Created: Mon Apr 25 15:25:37 2016
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(340, 253)
+        Form.resize(340, 353)
         self.topicEdit = QtGui.QLineEdit(Form)
         self.topicEdit.setGeometry(QtCore.QRect(110, 20, 191, 41))
         font = QtGui.QFont()
@@ -46,14 +46,14 @@ class Ui_Form(object):
         self.dateTimeEdit.setGeometry(QtCore.QRect(180, 80, 141, 24))
         self.dateTimeEdit.setObjectName("dateTimeEdit")
         self.reserveButton = QtGui.QPushButton(Form)
-        self.reserveButton.setGeometry(QtCore.QRect(60, 180, 221, 61))
+        self.reserveButton.setStyleSheet("background-color:#121317;color:white;")
+        self.reserveButton.setGeometry(QtCore.QRect(60, 280, 221, 61))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
         font.setPointSize(32)
         font.setWeight(75)
         font.setBold(True)
         self.reserveButton.setFont(font)
-        self.reserveButton.setStyleSheet("background-color:#121317;color:white;")
         self.reserveButton.setObjectName("reserveButton")
         self.dateTimeEdit_2 = QtGui.QDateTimeEdit(Form)
         self.dateTimeEdit_2.setStyleSheet("background-color:#121317;color:white;")
@@ -68,7 +68,19 @@ class Ui_Form(object):
         font.setBold(True)
         self.label.setFont(font)
         self.label.setObjectName("label")
-
+        self.room_label = QtGui.QLabel(Form)
+        self.room_label.setGeometry(QtCore.QRect(20, 180, 81, 31))
+        font = QtGui.QFont()
+        font.setFamily("Helvetica")
+        font.setPointSize(24)
+        font.setWeight(75)
+        font.setBold(True)
+        self.room_label.setFont(font)
+        self.room_label.setObjectName("room_label")
+        self.roomList = QtGui.QListWidget(Form)
+        self.roomList.setGeometry(QtCore.QRect(110, 180, 191, 81))
+        self.roomList.setObjectName("roomList")
+        self.roomList.setStyleSheet("background-color:#121317;color:white;")
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -78,4 +90,5 @@ class Ui_Form(object):
         self.datetimeLabel.setText(QtGui.QApplication.translate("Form", "Date & Time", None, QtGui.QApplication.UnicodeUTF8))
         self.reserveButton.setText(QtGui.QApplication.translate("Form", "RESERVE", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Form", "TO", None, QtGui.QApplication.UnicodeUTF8))
+        self.room_label.setText(QtGui.QApplication.translate("Form", "Room", None, QtGui.QApplication.UnicodeUTF8))
 
