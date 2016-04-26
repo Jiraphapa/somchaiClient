@@ -9,19 +9,36 @@ class Form1(QtGui.QWidget, login.Ui_Form):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         #self.button1.clicked.connect(self.handleButton)
-        self.register_2.clicked.connect(self.handleButton)
+        self.register_2.clicked.connect(self.doLogin)
         self.window2 = None
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;");
-    def handleButton(self):
+
+    def doLogin(self):
+
+        c = connector.Connector()
+        username = self.user_entry.text()
+        psw = self.pass_entry.text()
+        # authenticate
+        data = {'username': username, 'password': psw}
+        url = "Somchai/login"
+
+        # post and return user
+        user = c.post(url, data)
+        #dataIn = json.dumps(user)
+        dataIn = json.loads(user)
+        print(dataIn.get('first_name'))
+        #print(dataIn.get("first_name"))
+        # setup home
         if self.window2 is None:
-            self.window2 = Form2()
+            self.window2 = Home(user)
         #self.hide()
         self.window2.show()
         self.hide()
         #window=Form2()
         #window.show()
-#home page
+
+# home page
 class Form2(QtGui.QWidget, home.Home):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
