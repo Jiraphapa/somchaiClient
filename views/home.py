@@ -1,6 +1,4 @@
-
 from PySide import QtCore, QtGui
-from connector import *
 import  urllib
 import sys
 

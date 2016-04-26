@@ -8,7 +8,6 @@
 
 from PySide import QtCore, QtGui
 from . import home
-import connector
 import urllib
 import sys
 import json
@@ -34,6 +33,8 @@ class Ui_Form(object):
         self.pass_entry.setStyleSheet("background-color:#23252c;color:white;")
         self.pass_entry.setGeometry(QtCore.QRect(80, 100, 161, 21))
         self.pass_entry.setObjectName("pass_entry")
+        #hiding
+        self.pass_entry.setEchoMode(QtGui.QLineEdit.Password)
         self.username = QtGui.QLabel(Form)
         self.username.setStyleSheet("color:white;")
         self.username.setGeometry(QtCore.QRect(10, 60, 71, 21))
