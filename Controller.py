@@ -17,6 +17,7 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;");
         self.connector = Connector()
+        self.pass_entry.returnPressed.connect(self.doLogin)
 
     def doLogin(self):
 
@@ -66,6 +67,11 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
             return False
         return True
 
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Enter:
+            print("in")
+            self.login.clicked()
+
 
 # home page
 class Form2(QtWidgets.QWidget, home.Ui_Form):
@@ -92,27 +98,27 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
 
     def doProfile(self):
         if self.profileWindow is None:
-            self.profileWindow=profileForm()
+            self.profileWindow = profileForm()
         self.profileWindow.show()
 
     def doReserveShow(self):
         if self.reserveShow is None:
-            self.reserveShow=ReserveShow()
+            self.reserveShow = ReserveShow()
         self.reserveShow.show()
 
     def doHelp(self):
         if self.helpWindow is None:
-            self.helpWindow=Form3()
+            self.helpWindow = Form3()
         self.helpWindow.show()
 
     def doChat(self):
          if self.chatopWindow is None:
-             self.chatopWindow=ChatOptionForm()
+             self.chatopWindow = ChatOptionForm()
          self.chatopWindow.show()
 
     def doTodo(self,event):
         if self.todoWindow is None:
-             self.todoWindow=FullTodoForm()
+             self.todoWindow = FullTodoForm()
         self.todoWindow.show()
 
     def closeEvent(self, *args, **kwargs):

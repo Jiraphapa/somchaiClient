@@ -20,6 +20,7 @@ class Ui_Form(object):
         Form.setObjectName("Form")
         Form.resize(271, 223)
         self.login = QtWidgets.QPushButton(Form)
+        self.login.setDefault(True)
         self.login.setStyleSheet("background-color:#ffd200;")
 
         self.login.setGeometry(QtCore.QRect(80, 150, 111, 31))
@@ -81,6 +82,9 @@ class Ui_Form(object):
         self.password.setText(_translate("Form", "Password"))
         self.title.setText(_translate("Form", "SOMCHAI SECRETARY APP"))
         self.title.setStyleSheet("color:white;")
+
+
+
 
 
 
