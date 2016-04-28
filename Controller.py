@@ -1,7 +1,7 @@
 from PySide import QtCore, QtGui
 from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile
 import json
-import requests
+from Connector import Connector
 import sys
 
 
@@ -10,23 +10,22 @@ class Form1(QtGui.QWidget, login.Ui_Form):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
-        #self.button1.clicked.connect(self.handleButton)
         self.login.clicked.connect(self.doLogin)
         self.window2 = None
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;");
+        self.connector = Connector()
 
     def doLogin(self):
-
 
         username = self.user_entry.text()
         psw = self.pass_entry.text()
         # authenticate
         data = {'username': username, 'password': psw}
-        url = "http://127.0.0.1:8000/Somchai/login"
+        url = "Somchai/login"
 
         # post and return user
-        result = requests.post(url, data)
+        result,cookies = self.connector.postWithData(url, data)
 
         if not self.isDict(result.text):  # check if result.text can change back to dict, if not then its not a json
             self.dialog(result.text)
@@ -34,7 +33,7 @@ class Form1(QtGui.QWidget, login.Ui_Form):
             userData = json.loads(result.text)
             # setup home
             if self.window2 is None:
-                self.window2 = Form2(userData)
+                self.window2 = Form2(userData, cookies)
                 self.window2.show()
                 self.close()
             else:
@@ -68,7 +67,7 @@ class Form1(QtGui.QWidget, login.Ui_Form):
 
 # home page
 class Form2(QtGui.QWidget, home.Ui_Form):
-    def __init__(self, user, parent=None):
+    def __init__(self, user, cookie, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
@@ -85,26 +84,38 @@ class Form2(QtGui.QWidget, home.Ui_Form):
         self.todoWindow=None
         self.reserveShow=None
         self.profileWindow=None
+        self.user = user
+        self.connector = Connector()
+        self.cookie = cookie
+
     def doProfile(self):
         if self.profileWindow is None:
             self.profileWindow=profileForm()
         self.profileWindow.show()
+
     def doReserveShow(self):
         if self.reserveShow is None:
             self.reserveShow=ReserveShow()
         self.reserveShow.show()
+
     def doHelp(self):
         if self.helpWindow is None:
             self.helpWindow=Form3()
         self.helpWindow.show()
+
     def doChat(self):
          if self.chatopWindow is None:
              self.chatopWindow=ChatOptionForm()
          self.chatopWindow.show()
+
     def doTodo(self,event):
         if self.todoWindow is None:
              self.todoWindow=FullTodoForm()
         self.todoWindow.show()
+
+    def closeEvent(self, *args, **kwargs):
+        r, self.cookie = self.connector.post("Somchai/logout", cookie=self.cookie)
+        print(r.text)
 
 
 # help page
