@@ -7,13 +7,15 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(344, 367)
-        self.reserve_label = QtGui.QLabel(Form)
+        self.reserve_label = QtWidgets.QLabel(Form)
         self.reserve_label.setGeometry(QtCore.QRect(30, 20, 291, 41))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -23,11 +25,11 @@ class Ui_Form(object):
         self.reserve_label.setFont(font)
         self.reserve_label.setStyleSheet("color:#f8e71d;")
         self.reserve_label.setObjectName("reserve_label")
-        self.reserved_list = QtGui.QListWidget(Form)
+        self.reserved_list = QtWidgets.QListWidget(Form)
         self.reserved_list.setStyleSheet("background-color:#23252c;")
         self.reserved_list.setGeometry(QtCore.QRect(20, 70, 301, 221))
         self.reserved_list.setObjectName("reserved_list")
-        self.reserveButton = QtGui.QPushButton(Form)
+        self.reserveButton = QtWidgets.QPushButton(Form)
         self.reserveButton.setStyleSheet("background-color:#f8e71d;")
         self.reserveButton.setGeometry(QtCore.QRect(70, 300, 201, 61))
         font = QtGui.QFont()
@@ -42,7 +44,8 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.reserve_label.setText(QtGui.QApplication.translate("Form", "RESERVED LIST", None, QtGui.QApplication.UnicodeUTF8))
-        self.reserveButton.setText(QtGui.QApplication.translate("Form", "RESERVE A ROOM", None, QtGui.QApplication.UnicodeUTF8))
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.reserve_label.setText(_translate("Form", "RESERVED LIST"))
+        self.reserveButton.setText(_translate("Form", "RESERVE A ROOM"))
 

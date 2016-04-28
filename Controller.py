@@ -15,7 +15,7 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
         self.login.clicked.connect(self.doLogin)
         self.window2 = None
         self.setWindowOpacity(0.98)
-        self.setStyleSheet("background-color:#121317;");
+        self.setStyleSheet("background-color:#121317;")
         self.connector = Connector()
         self.pass_entry.returnPressed.connect(self.doLogin)
 

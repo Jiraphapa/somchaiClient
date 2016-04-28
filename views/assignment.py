@@ -7,13 +7,15 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(373, 343)
-        self.label = QtGui.QLabel(Form)
+        self.label = QtWidgets.QLabel(Form)
         self.label.setGeometry(QtCore.QRect(70, 0, 261, 71))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -22,7 +24,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.employeeLabel = QtGui.QLabel(Form)
+        self.employeeLabel = QtWidgets.QLabel(Form)
         self.employeeLabel.setStyleSheet("color:white;")
         self.employeeLabel.setGeometry(QtCore.QRect(30, 70, 91, 31))
         font = QtGui.QFont()
@@ -32,7 +34,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.employeeLabel.setFont(font)
         self.employeeLabel.setObjectName("employeeLabel")
-        self.taskLabel = QtGui.QLabel(Form)
+        self.taskLabel = QtWidgets.QLabel(Form)
         self.taskLabel.setStyleSheet("color:white;")
         self.taskLabel.setGeometry(QtCore.QRect(30, 110, 141, 41))
         font = QtGui.QFont()
@@ -42,7 +44,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.taskLabel.setFont(font)
         self.taskLabel.setObjectName("taskLabel")
-        self.deadlineLabel = QtGui.QLabel(Form)
+        self.deadlineLabel = QtWidgets.QLabel(Form)
         self.deadlineLabel.setStyleSheet("color:white;")
         self.deadlineLabel.setGeometry(QtCore.QRect(30, 220, 81, 31))
         font = QtGui.QFont()
@@ -52,15 +54,15 @@ class Ui_Form(object):
         font.setBold(True)
         self.deadlineLabel.setFont(font)
         self.deadlineLabel.setObjectName("deadlineLabel")
-        self.employeeBox = QtGui.QComboBox(Form)
+        self.employeeBox = QtWidgets.QComboBox(Form)
         self.employeeBox.setStyleSheet("color:white;background-color:#121317;")
         self.employeeBox.setGeometry(QtCore.QRect(150, 70, 191, 31))
         self.employeeBox.setObjectName("employeeBox")
-        self.dateTimeEdit = QtGui.QDateTimeEdit(Form)
+        self.dateTimeEdit = QtWidgets.QDateTimeEdit(Form)
         self.dateTimeEdit.setStyleSheet("color:white;background-color:#121317;")
         self.dateTimeEdit.setGeometry(QtCore.QRect(140, 190, 194, 24))
         self.dateTimeEdit.setObjectName("dateTimeEdit")
-        self.assignButton = QtGui.QPushButton(Form)
+        self.assignButton = QtWidgets.QPushButton(Form)
         self.assignButton.setStyleSheet("color:white;background-color:#121317;")
         self.assignButton.setGeometry(QtCore.QRect(130, 270, 121, 61))
         font = QtGui.QFont()
@@ -70,11 +72,11 @@ class Ui_Form(object):
         font.setBold(True)
         self.assignButton.setFont(font)
         self.assignButton.setObjectName("assignButton")
-        self.descripEdit = QtGui.QTextEdit(Form)
+        self.descripEdit = QtWidgets.QTextEdit(Form)
         self.descripEdit.setGeometry(QtCore.QRect(190, 110, 151, 61))
         self.descripEdit.setObjectName("descripEdit")
         self.descripEdit.setStyleSheet("color:white;background-color:#121317;")
-        self.startLabel = QtGui.QLabel(Form)
+        self.startLabel = QtWidgets.QLabel(Form)
         self.startLabel.setGeometry(QtCore.QRect(30, 180, 91, 41))
         self.startLabel.setStyleSheet("color:white;")
         font = QtGui.QFont()
@@ -84,7 +86,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.startLabel.setFont(font)
         self.startLabel.setObjectName("startLabel")
-        self.dateTimeEdit_2 = QtGui.QDateTimeEdit(Form)
+        self.dateTimeEdit_2 = QtWidgets.QDateTimeEdit(Form)
         self.dateTimeEdit_2.setStyleSheet("color:white;background-color:#121317;")
         self.dateTimeEdit_2.setGeometry(QtCore.QRect(140, 230, 194, 24))
         self.dateTimeEdit_2.setObjectName("dateTimeEdit_2")
@@ -93,11 +95,12 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("Form", "ASSIGN TASK", None, QtGui.QApplication.UnicodeUTF8))
-        self.employeeLabel.setText(QtGui.QApplication.translate("Form", "Employee", None, QtGui.QApplication.UnicodeUTF8))
-        self.taskLabel.setText(QtGui.QApplication.translate("Form", "Task description", None, QtGui.QApplication.UnicodeUTF8))
-        self.deadlineLabel.setText(QtGui.QApplication.translate("Form", "Deadline", None, QtGui.QApplication.UnicodeUTF8))
-        self.assignButton.setText(QtGui.QApplication.translate("Form", "ASSIGN", None, QtGui.QApplication.UnicodeUTF8))
-        self.startLabel.setText(QtGui.QApplication.translate("Form", "Start date", None, QtGui.QApplication.UnicodeUTF8))
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.label.setText(_translate("Form", "ASSIGN TASK"))
+        self.employeeLabel.setText(_translate("Form", "Employee"))
+        self.taskLabel.setText(_translate("Form", "Task description"))
+        self.deadlineLabel.setText(_translate("Form", "Deadline"))
+        self.assignButton.setText(_translate("Form", "ASSIGN"))
+        self.startLabel.setText(_translate("Form", "Start date"))
 

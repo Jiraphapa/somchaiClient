@@ -7,13 +7,15 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(302, 530)
-        self.todoList_label = QtGui.QLabel(Form)
+        self.todoList_label = QtWidgets.QLabel(Form)
         self.todoList_label.setGeometry(QtCore.QRect(60, 20, 191, 41))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -23,11 +25,11 @@ class Ui_Form(object):
         self.todoList_label.setFont(font)
         self.todoList_label.setStyleSheet("color:white;")
         self.todoList_label.setObjectName("todoList_label")
-        self.tasksList = QtGui.QListWidget(Form)
+        self.tasksList = QtWidgets.QListWidget(Form)
         self.tasksList.setGeometry(QtCore.QRect(15, 70, 271, 361))
         self.tasksList.setStyleSheet("background-color:white;")
         self.tasksList.setObjectName("tasksList")
-        self.addButton = QtGui.QPushButton(Form)
+        self.addButton = QtWidgets.QPushButton(Form)
         self.addButton.setStyleSheet("background-color:#2283f6;color:white;")
         self.addButton.setGeometry(QtCore.QRect(10, 440, 131, 81))
         font = QtGui.QFont()
@@ -37,7 +39,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.addButton.setFont(font)
         self.addButton.setObjectName("addButton")
-        self.finishButton = QtGui.QPushButton(Form)
+        self.finishButton = QtWidgets.QPushButton(Form)
         self.finishButton.setStyleSheet("background-color:#23252c;color:white;")
         self.finishButton.setGeometry(QtCore.QRect(160, 440, 131, 81))
         font = QtGui.QFont()
@@ -52,8 +54,9 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.todoList_label.setText(QtGui.QApplication.translate("Form", "TODO LIST", None, QtGui.QApplication.UnicodeUTF8))
-        self.addButton.setText(QtGui.QApplication.translate("Form", "ADD", None, QtGui.QApplication.UnicodeUTF8))
-        self.finishButton.setText(QtGui.QApplication.translate("Form", "FINISH", None, QtGui.QApplication.UnicodeUTF8))
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.todoList_label.setText(_translate("Form", "TODO LIST"))
+        self.addButton.setText(_translate("Form", "ADD"))
+        self.finishButton.setText(_translate("Form", "FINISH"))
 

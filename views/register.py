@@ -1,7 +1,7 @@
 
 import sys
 
-from connector import *
+from Connector import *
 from PySide import QtCore, QtGui
 
 class Register(object):
