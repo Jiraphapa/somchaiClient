@@ -1,4 +1,6 @@
-from PySide import QtCore, QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile
 import json
 from Connector import Connector
@@ -6,9 +8,9 @@ import sys
 
 
 # login page
-class Form1(QtGui.QWidget, login.Ui_Form):
+class Form1(QtWidgets.QWidget, login.Ui_Form):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.login.clicked.connect(self.doLogin)
         self.window2 = None
@@ -25,7 +27,7 @@ class Form1(QtGui.QWidget, login.Ui_Form):
         url = "Somchai/login"
 
         # post and return user
-        result,cookies = self.connector.postWithData(url, data)
+        result, cookies = self.connector.postWithData(url, data)
 
         if not self.isDict(result.text):  # check if result.text can change back to dict, if not then its not a json
             self.dialog(result.text)
@@ -66,9 +68,9 @@ class Form1(QtGui.QWidget, login.Ui_Form):
 
 
 # home page
-class Form2(QtGui.QWidget, home.Ui_Form):
+class Form2(QtWidgets.QWidget, home.Ui_Form):
     def __init__(self, user, cookie, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
@@ -119,17 +121,17 @@ class Form2(QtGui.QWidget, home.Ui_Form):
 
 
 # help page
-class Form3(QtGui.QWidget, instruction.Ui_Form):
+class Form3(QtWidgets.QWidget, instruction.Ui_Form):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.9)
         self.setStyleSheet("background-color:#ffd200;")
 
 
-class ChatOptionForm(QtGui.QWidget, chatOpt.Ui_Form):
+class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
       def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
@@ -142,17 +144,17 @@ class ChatOptionForm(QtGui.QWidget, chatOpt.Ui_Form):
           self.chatRoomWindow.show()
 
 
-class ChatRoomForm(QtGui.QWidget, chatRoom.Ui_Form):
+class ChatRoomForm(QtWidgets.QWidget, chatRoom.Ui_Form):
      def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
 
 
-class FullTodoForm(QtGui.QWidget,FullTodo.Ui_Form ):
+class FullTodoForm(QtWidgets.QWidget,FullTodo.Ui_Form ):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
@@ -164,9 +166,9 @@ class FullTodoForm(QtGui.QWidget,FullTodo.Ui_Form ):
         self.assignWindow.show()
 
 
-class ReserveShow(QtGui.QWidget,reserveShow.Ui_Form ):
+class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
       def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.reserveButton.clicked.connect(self.showForm)
@@ -178,25 +180,25 @@ class ReserveShow(QtGui.QWidget,reserveShow.Ui_Form ):
           self.reserveForm.show()
 
 
-class ReserveForm(QtGui.QWidget,reserveForm.Ui_Form ):
+class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):
      def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#f8e71d;")
 
 
-class assignForm(QtGui.QWidget,assignment.Ui_Form ):
+class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#2283f6;")
 
 
-class profileForm(QtGui.QWidget,profile.Ui_Form):
+class profileForm(QtWidgets.QWidget,profile.Ui_Form):
      def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setStyleSheet("background-color:#01cc9f;")
         self.setupUi(self)
         self.setWindowOpacity(0.9)
@@ -205,8 +207,7 @@ class profileForm(QtGui.QWidget,profile.Ui_Form):
 if __name__ == '__main__':
 
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = Form1()
-    #window = Form2()
     window.show()
     sys.exit(app.exec_())

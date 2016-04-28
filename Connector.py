@@ -13,7 +13,7 @@ class Connector:
         print(self.url+url)
         return r, r.cookies
 
-    def post(self, url, cookie=None):h
+    def post(self, url, cookie=None):
         if cookie is not None:
             r = requests.post(self.url+url,cookies=cookie)
         else:

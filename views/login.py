@@ -6,8 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
-import connector
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+import Connector
 import urllib
 import sys
 import json
@@ -17,7 +19,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(271, 223)
-        self.login = QtGui.QPushButton(Form)
+        self.login = QtWidgets.QPushButton(Form)
         self.login.setStyleSheet("background-color:#ffd200;")
 
         self.login.setGeometry(QtCore.QRect(80, 140, 111, 31))
@@ -25,18 +27,18 @@ class Ui_Form(object):
         font.setFamily("Century Gothic")
         self.login.setFont(font)
         self.login.setObjectName("login")
-        self.user_entry = QtGui.QLineEdit(Form)
+        self.user_entry = QtWidgets.QLineEdit(Form)
         self.user_entry.setStyleSheet("background-color:#23252c;color:white;")
         self.user_entry.setGeometry(QtCore.QRect(80, 60, 161, 21))
         self.user_entry.setObjectName("user_entry")
-        self.pass_entry = QtGui.QLineEdit(Form)
+        self.pass_entry = QtWidgets.QLineEdit(Form)
         self.pass_entry.setStyleSheet("background-color:#23252c;color:white;")
         self.pass_entry.setGeometry(QtCore.QRect(80, 100, 161, 21))
         self.pass_entry.setObjectName("pass_entry")
-        self.pass_entry.setEchoMode(QtGui.QLineEdit.Password)
+        self.pass_entry.setEchoMode(QtWidgets.QLineEdit.Password)
         #hiding
-        self.pass_entry.setEchoMode(QtGui.QLineEdit.Password)
-        self.username = QtGui.QLabel(Form)
+        self.pass_entry.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.username = QtWidgets.QLabel(Form)
         self.username.setStyleSheet("color:white;")
         self.username.setGeometry(QtCore.QRect(10, 60, 71, 21))
         font = QtGui.QFont()
@@ -46,7 +48,7 @@ class Ui_Form(object):
         self.username.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.username.setAlignment(QtCore.Qt.AlignCenter)
         self.username.setObjectName("username")
-        self.password = QtGui.QLabel(Form)
+        self.password = QtWidgets.QLabel(Form)
         self.password.setStyleSheet("color:white;")
         self.password.setGeometry(QtCore.QRect(10, 100, 71, 21))
         font = QtGui.QFont()
@@ -58,7 +60,7 @@ class Ui_Form(object):
         self.password.setObjectName("password")
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
-        self.title = QtGui.QLabel(Form)
+        self.title = QtWidgets.QLabel(Form)
         self.title.setGeometry(QtCore.QRect(0, 10, 271, 41))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")

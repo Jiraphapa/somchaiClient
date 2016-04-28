@@ -118,15 +118,6 @@ class Ui_Form(object):
         self.time_label.setText(time.strftime("%X"))
 
 
-
-
-
-
-
-
-
-
-
 def main():
 
     app = QtGui.QApplication(sys.argv)
