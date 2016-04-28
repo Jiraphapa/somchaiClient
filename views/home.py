@@ -1,6 +1,4 @@
-
 from PySide import QtCore, QtGui
-from connector import *
 import  urllib
 import sys
 
@@ -9,7 +7,7 @@ import sys
 import time
 
 
-class Home(object):
+class Ui_Form(object):
     def setupUi(self, Form):
         self.num = 0
 
@@ -22,9 +20,8 @@ class Home(object):
         font.setFamily("Century Gothic")
         font.setPointSize(20)
         font.setBold(False)
-        font.setWeight(40)
+        font.setWeight(50)
         self.todo_button.setFont(font)
-        self.todo_button.setStyleSheet("background-color:#2283f6;")
         self.todo_button.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.todo_button.setText("")
         self.todo_button.setObjectName("todo_button")
@@ -32,21 +29,17 @@ class Home(object):
         self.chat_button.setGeometry(QtCore.QRect(200, 240, 181, 181))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
-        font.setPointSize(50)
+        font.setPointSize(20)
         self.chat_button.setFont(font)
-        self.chat_button.setStyleSheet("color:white;background-color:#fe3d50;")
         self.chat_button.setObjectName("chat_button")
         self.reserve_button = QtGui.QPushButton(Form)
-        self.reserve_button.setStyleSheet("color:white;")
         self.reserve_button.setGeometry(QtCore.QRect(390, 240, 181, 181))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
-        font.setPointSize(35)
+        font.setPointSize(20)
         self.reserve_button.setFont(font)
-        self.reserve_button.setStyleSheet("background-color:#f8e71d;color:#464646;")
         self.reserve_button.setObjectName("reserve_button")
         self.profile_button = QtGui.QPushButton(Form)
-        self.profile_button.setStyleSheet("color:white;background-color:#01cc9f;")
         self.profile_button.setGeometry(QtCore.QRect(490, 0, 91, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
@@ -57,7 +50,6 @@ class Home(object):
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         self.help_button.setFont(font)
-        self.help_button.setStyleSheet("color:white;background-color:#244856;")
         self.help_button.setObjectName("help_button")
         self.time_label = QtGui.QLabel(Form)
         self.time_label.setGeometry(QtCore.QRect(140, 70, 331, 111))
@@ -66,7 +58,6 @@ class Home(object):
         font.setFamily("Century Gothic")
         font.setPointSize(85)
         self.time_label.setFont(font)
-        self.time_label.setStyleSheet("color:white;")
         self.time_label.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.time_label.setAlignment(QtCore.Qt.AlignCenter)
         self.time_label.setObjectName("time_label")
@@ -74,8 +65,7 @@ class Home(object):
         self.todo_label.setGeometry(QtCore.QRect(10, 240, 181, 41))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
-        font.setPointSize(40)
-        self.todo_label.setStyleSheet("color:white;background-color:#2283f6;")
+        font.setPointSize(20)
         self.todo_label.setFont(font)
         self.todo_label.setAlignment(QtCore.Qt.AlignCenter)
         self.todo_label.setObjectName("todo_label")
@@ -114,8 +104,8 @@ class Home(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.chat_button.setText(_translate("Form", "CHAT"))
-        self.reserve_button.setText(_translate("Form", "RESERVE"))
+        self.chat_button.setText(_translate("Form", "Chat"))
+        self.reserve_button.setText(_translate("Form", "Reserve"))
         self.profile_button.setText(_translate("Form", "Profile"))
         self.help_button.setText(_translate("Form", "Help"))
         #self.time_label.setText(_translate("Form", "Time"))
@@ -126,6 +116,15 @@ class Home(object):
         if self.num > 100:
             self.num = 0
         self.time_label.setText(time.strftime("%X"))
+
+
+
+
+
+
+
+
+
 
 
 def main():
