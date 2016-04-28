@@ -7,13 +7,15 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(371, 299)
-        self.name_label = QtGui.QLabel(Form)
+        self.name_label = QtWidgets.QLabel(Form)
         self.name_label.setGeometry(QtCore.QRect(20, 100, 91, 21))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -23,7 +25,7 @@ class Ui_Form(object):
         self.name_label.setFont(font)
         self.name_label.setStyleSheet("color:black;")
         self.name_label.setObjectName("name_label")
-        self.header_label = QtGui.QLabel(Form)
+        self.header_label = QtWidgets.QLabel(Form)
         self.header_label.setStyleSheet("color:white;background-color:#121317;")
         self.header_label.setGeometry(QtCore.QRect(20, 20, 331, 61))
         font = QtGui.QFont()
@@ -34,7 +36,7 @@ class Ui_Form(object):
         self.header_label.setFont(font)
         self.header_label.setFrameShape(QtGui.QFrame.Box)
         self.header_label.setObjectName("header_label")
-        self.email_label = QtGui.QLabel(Form)
+        self.email_label = QtWidgets.QLabel(Form)
         self.email_label.setStyleSheet("color:black;")
         self.email_label.setGeometry(QtCore.QRect(20, 140, 81, 21))
         font = QtGui.QFont()
@@ -44,7 +46,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.email_label.setFont(font)
         self.email_label.setObjectName("email_label")
-        self.phone_label = QtGui.QLabel(Form)
+        self.phone_label = QtWidgets.QLabel(Form)
         self.phone_label.setStyleSheet("color:black;")
         self.phone_label.setGeometry(QtCore.QRect(20, 180, 91, 21))
         font = QtGui.QFont()
@@ -54,7 +56,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.phone_label.setFont(font)
         self.phone_label.setObjectName("phone_label")
-        self.nametag = QtGui.QLabel(Form)
+        self.nametag = QtWidgets.QLabel(Form)
         self.nametag.setStyleSheet("color:white;")
         self.nametag.setGeometry(QtCore.QRect(120, 100, 281, 21))
         font = QtGui.QFont()
@@ -65,7 +67,7 @@ class Ui_Form(object):
         self.nametag.setFont(font)
         self.nametag.setStyleSheet("color:white;")
         self.nametag.setObjectName("nametag")
-        self.emailtag = QtGui.QLabel(Form)
+        self.emailtag = QtWidgets.QLabel(Form)
         self.emailtag.setStyleSheet("color:white;")
         self.emailtag.setGeometry(QtCore.QRect(90, 140, 281, 21))
         font = QtGui.QFont()
@@ -75,7 +77,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.emailtag.setFont(font)
         self.emailtag.setObjectName("emailtag")
-        self.phonetag = QtGui.QLabel(Form)
+        self.phonetag = QtWidgets.QLabel(Form)
         self.phonetag.setGeometry(QtCore.QRect(120, 180, 91, 21))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -85,7 +87,7 @@ class Ui_Form(object):
         self.phonetag.setFont(font)
         self.phonetag.setObjectName("phonetag")
         self.phonetag.setStyleSheet("color:white;")
-        self.position_label = QtGui.QLabel(Form)
+        self.position_label = QtWidgets.QLabel(Form)
         self.position_label.setStyleSheet("color:black;")
         self.position_label.setGeometry(QtCore.QRect(20, 222, 81, 21))
         font = QtGui.QFont()
@@ -95,7 +97,7 @@ class Ui_Form(object):
         font.setBold(True)
         self.position_label.setFont(font)
         self.position_label.setObjectName("position_label")
-        self.dep_label = QtGui.QLabel(Form)
+        self.dep_label = QtWidgets.QLabel(Form)
         self.dep_label.setGeometry(QtCore.QRect(20, 260, 141, 21))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -105,7 +107,7 @@ class Ui_Form(object):
         self.dep_label.setFont(font)
         self.dep_label.setStyleSheet("color:black;")
         self.dep_label.setObjectName("dep_label")
-        self.postag = QtGui.QLabel(Form)
+        self.postag = QtWidgets.QLabel(Form)
         self.postag.setGeometry(QtCore.QRect(110, 210, 81, 41))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
@@ -115,7 +117,7 @@ class Ui_Form(object):
         self.postag.setFont(font)
         self.postag.setObjectName("postag")
         self.postag.setStyleSheet("color:white;")
-        self.deptag = QtGui.QLabel(Form)
+        self.deptag = QtWidgets.QLabel(Form)
         self.deptag.setStyleSheet("color:white;")
         self.deptag.setGeometry(QtCore.QRect(140, 260, 81, 21))
         font = QtGui.QFont()

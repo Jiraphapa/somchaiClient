@@ -44,12 +44,12 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
     # create dialog box
     def dialog(self, mes):
         # initial dialog box
-        w = QtGui.QDialog(self)
-        layout = QtGui.QVBoxLayout()
+        w = QtWidgets.QDialog(self)
+        layout = QtWidgets.QVBoxLayout()
 
         # massage and button
-        massage = QtGui.QLabel("Caution : " + mes)
-        bt = QtGui.QPushButton("OK")
+        massage = QtWidgets.QLabel("Caution : " + mes)
+        bt = QtWidgets.QPushButton("OK")
 
         # add massage to layout
         layout.addWidget(massage)
