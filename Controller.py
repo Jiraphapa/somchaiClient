@@ -5,8 +5,8 @@ from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserve
 import json
 from Connector import Connector
 import sys
-
-
+#placeholder for user data
+globalUserData=None
 # login page
 class Form1(QtWidgets.QWidget, login.Ui_Form):
     def __init__(self, parent=None):
@@ -34,6 +34,7 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
             self.dialog(result.text)
         else:
             userData = json.loads(result.text)
+            globalUserData=userData
             # setup home
             if self.window2 is None:
                 self.window2 = Form2(userData, cookies)
@@ -95,6 +96,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
         self.user = user
         self.connector = Connector()
         self.cookie = cookie
+        self.queryTodo()
 
     def doProfile(self):
         if self.profileWindow is None:
@@ -125,8 +127,24 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
         r, self.cookie = self.connector.post("Somchai/logout", cookie=self.cookie)
         print(r.text)
 
+    def isDict(self, mes):
+        try:
+            dic = json.loads(mes)
+        except ValueError as e:
+            return False
+        return True
 
-# help page
+
+    def queryTodo(self):
+        r,self.cookie=self.connector.get("Somchai/getTodo",cookie=self.cookie)
+        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+            print("no todo yet")
+        else:
+            todoData = json.loads(r.text)
+            print(todoData)
+
+
+# help page - finishes
 class Form3(QtWidgets.QWidget, instruction.Ui_Form):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
@@ -134,7 +152,7 @@ class Form3(QtWidgets.QWidget, instruction.Ui_Form):
         self.setWindowOpacity(0.9)
         self.setStyleSheet("background-color:#ffd200;")
 
-
+#chat option
 class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
       def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
@@ -166,10 +184,20 @@ class FullTodoForm(QtWidgets.QWidget,FullTodo.Ui_Form ):
         self.setStyleSheet("background-color:#121317;")
         self.addButton.clicked.connect(self.invokeAssign)
         self.assignWindow=None
+        self.queryTodo()
     def invokeAssign(self):
         if self.assignWindow is None:
              self.assignWindow=assignForm()
         self.assignWindow.show()
+        self.assignWindow.assignButton.clicked.connect(self.queryTodo)
+
+    def queryTodo(self):
+        r,self.cookie=self.connector.get("Somchai/getTodo",cookie=self.cookie)
+        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+            self.dialog(r.text)
+        else:
+            todoData = json.loads(r.text)
+            print(todoData)
 
 
 class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
@@ -180,10 +208,18 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
         self.reserveButton.clicked.connect(self.showForm)
         self.reserveForm=None
         self.setStyleSheet("background-color:#121317;")
+        self.showReserved()
       def showForm(self):
           if self.reserveForm is None:
              self.reserveForm=ReserveForm()
           self.reserveForm.show()
+      def showReserved(self):
+        r,self.cookie=self.connector.get("Somchai/getReserved",cookie=self.cookie)
+        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+            self.dialog(r.text)
+        else:
+            reserveData = json.loads(r.text)
+        print(reserveData)
 
 
 class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):
@@ -192,6 +228,15 @@ class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#f8e71d;")
+     def addReserve(self):
+         detail=str(self.topicEdit.text())
+         start=self.dateTimeEdit.text()
+         end=self.dateTimeEdit_2.text()
+         room=self.roomList.currentItem().text()
+         data={'':detail,}
+         url="Somchai/reserve"
+        # post and return user
+         result, cookies = self.connector.postWithData(url, data)
 
 
 class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
@@ -200,6 +245,18 @@ class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#2283f6;")
+        self.assignButton.clicked.connect(self.addTask)
+    def addTask(self):
+        usr = str(self.employeeBox.currentText())
+        detail=str(self.descripEdit.toPlainText())
+        start=self.dateTimeEdit.text()
+        end=self.dateTimeEdit_2.text()
+        detail=detail+" from "+start+" to "+end
+        data = {'user': usr, 'taskDescription':detail,}
+        url = "Somchai/todo"
+        # post and return user
+        result, cookies = self.connector.postWithData(url, data)
+
 
 
 class profileForm(QtWidgets.QWidget,profile.Ui_Form):
@@ -208,6 +265,7 @@ class profileForm(QtWidgets.QWidget,profile.Ui_Form):
         self.setStyleSheet("background-color:#01cc9f;")
         self.setupUi(self)
         self.setWindowOpacity(0.9)
+        print(globalUserData)
 
 
 if __name__ == '__main__':
