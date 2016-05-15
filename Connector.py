@@ -3,7 +3,7 @@ import requests
 
 class Connector:
     def __init__(self):
-        self.url = "http://161.246.94.31:8000/"
+        self.url = "http://161.246.94.87:8000/"
 
     def postWithData(self, url, data, cookie=None):
         if cookie is not None:
@@ -19,6 +19,7 @@ class Connector:
         else:
             r = requests.post(self.url+url)
         return r, r.cookies
+
     def get(self,url,cookie=None):
         if cookie is not None:
             r=requests.get(self.url+url,cookies=cookie)
