@@ -254,31 +254,49 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
           self.reserveForm.show()
       def showReserved(self):
         
-        r,self.cookie=connector.get("Somchai/getReserved",cookie=self.cookie)
+        r,cookie=connector.get("Somchai/Meeting/getRoom",cookie=self.cookie)
         if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
-            self.dialog(r.text)
+            print("empty")
         else:
             reserveData = json.loads(r.text)
-        print(reserveData)
+            for item in reserveData:
+                self.reserved_list.addItem(reserveData[item])
 
 
 class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):
      def __init__(self,cookie, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        print(cookie)
         self.cookie=cookie
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#f8e71d;")
+        self.reserveButton.clicked.connect(self.addReserve)
+        self.fillRoom()
+     def isDict(self, mes):
+        try:
+            dic = json.loads(mes)
+        except ValueError as e:
+            return False
+        return True
+     def fillRoom(self):
+        r,cookie=connector.get("Somchai/Meeting/getRoom",cookie=self.cookie)
+        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+            print("empty")
+        else:
+            reserveData = json.loads(r.text)
+            for item in reserveData:
+                self.roomList.addItem(reserveData[item])
      def addReserve(self):
          
          detail=str(self.topicEdit.text())
          start=self.dateTimeEdit.text()
          end=self.dateTimeEdit_2.text()
          room=self.roomList.currentItem().text()
-         data={'':detail,}
-         url="Somchai/reserve"
+         data={'topic':detail,'roomStart':start,'roomEnd':end,'room':room,}
+         url="Somchai/Meeting/makeReserve"
         # post and return user
-         result, cookies = connector.postWithData(url, data)
+         result, cookies = connector.postWithData(url, data, self.cookie)
 
 
 class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
@@ -297,7 +315,7 @@ class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
             return False
         return True
     def fillEmployee(self):
-        r,self.cookie=connector.get("Somchai/get_allUser",cookie=self.cookie)
+        r,cookie=connector.get("Somchai/get_allUser",cookie=self.cookie)
         if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
             print("no employee yet")
         else:
