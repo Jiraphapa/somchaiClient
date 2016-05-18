@@ -303,8 +303,8 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
         if(self.listWidget.count() > 0):
             #serverdetail=self.listWidget.currentItem().text()
             content=self.roomlist[self.listWidget.currentRow()]
-            self.cIP = {'roomIP': content['chatIP']}
-            self.cPORT = {'roomPort': content['chatPort']}
+            self.cIP = content['chatIP']
+            self.cPORT = content['chatPort']
             self.connection()
 
     def connection(self):
@@ -322,18 +322,19 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         self.usePORT = port
         self.setupUi(self)
         self.messageEdit.returnPressed.connect(self.sendMsg)
-
-    def connection(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connection()
+    def connection(self):
+
         try:
             self.sock.connect((self.useIP,self.usePORT))
-            self.show()
+            #self.show()
         except:
             warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
-            warning.show()
+            #warning.show()
             self.close()
 
-        threading.Thread(target = self.recvmessage).start()
+        threading.Thread(target = self.recvMsg()).start()
 
     def sendMsg(self):
         while True:
