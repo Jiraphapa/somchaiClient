@@ -7,16 +7,21 @@ from Connector import Connector
 import sys
 #placeholder for user data
 globalUserData=None
+authority=None
+nameData=None
 connector=Connector()
 # login page
 class Form1(QtWidgets.QWidget, login.Ui_Form):
+
     def __init__(self, parent=None):
+        self.invalidCount=0
         QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.login.clicked.connect(self.doLogin)
         self.window2 = None
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
+        self.user_entry.returnPressed.connect(self.doLogin)
         self.pass_entry.returnPressed.connect(self.doLogin)
 
     def doLogin(self):
@@ -45,22 +50,30 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
 
     # create dialog box
     def dialog(self, mes):
+        self.invalidCount+=1
+        if self.invalidCount==3:
+            mes="Too many retrials, please retry later"
+            self.setDisabled(True)
         # initial dialog box
-        w = QtWidgets.QDialog(self)
+        self.w = QtWidgets.QDialog(self)
         layout = QtWidgets.QVBoxLayout()
 
         # massage and button
         massage = QtWidgets.QLabel("Caution : " + mes)
-        bt = QtWidgets.QPushButton("OK")
 
+        massage.setStyleSheet("color:red;font-size:18px;")
+        bt = QtWidgets.QPushButton("OK")
+        bt.clicked.connect(self.closeCaution)
+        bt.setStyleSheet("font-size:18px;color:white;")
         # add massage to layout
         layout.addWidget(massage)
         layout.addWidget(bt)
 
         # set layout to widget
-        w.setLayout(layout)
-        w.show()
-
+        self.w.setLayout(layout)
+        self.w.show()
+    def closeCaution(self):
+        self.w.close()
     def isDict(self, mes):
         try:
             dic = json.loads(mes)
@@ -97,7 +110,13 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
         self.cookie = cookie
         print("con " + str(self.cookie))
         self.queryTodo()
-
+        r,cookie=connector.get("Somchai/Profile/getProfile",cookie=self.cookie)
+        profileData = json.loads(r.text)
+        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+            authority=None
+        else:
+            authority=profileData['position'].lower()
+            print(authority)
     def doProfile(self):
         if self.profileWindow is None:
             r,cookie=connector.get("Somchai/Profile/getProfile",cookie=self.cookie)
@@ -109,6 +128,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
                 self.profileWindow = profileForm(self.cookie)
                 self.profileWindow.header_label.setText(profileData['fullName'].partition(' ')[0])
                 self.profileWindow.nametag.setText(profileData['fullName'])
+                nameData=profileData['fullName']
                 self.profileWindow.emailtag.setText(profileData['email'])
                 self.profileWindow.phonetag.setText(profileData['phone'])
                 self.profileWindow.postag.setText(profileData['position'])
@@ -129,6 +149,8 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
     def doChat(self):
          if self.chatopWindow is None:
              self.chatopWindow = ChatOptionForm(self.cookie)
+             if authority==None or (authority!="manager" and authority!="ceo"):
+                 self.chatopWindow.createButton.setDisabled(True)
          self.chatopWindow.show()
 
     def doTodo(self,event):
@@ -141,6 +163,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
 
         r, self.cookie = connector.post("Somchai/logout", cookie=self.cookie)
         print(r.text)
+        sys.exit()
 
     def isDict(self, mes):
         try:
@@ -259,6 +282,8 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
         self.reserveButton.clicked.connect(self.showForm)
         self.reserveForm=None
         self.setStyleSheet("background-color:#121317;")
+        if authority==None or (authority!="manager" and authority!="ceo"):
+            self.reserveButton.setDisabled(True)
         self.showReserved()
       def isDict(self, mes):
         try:
@@ -338,6 +363,10 @@ class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
             return False
         return True
     def fillEmployee(self):
+        #non-authority is only allowed to assign work to themselves
+        if authority==None or (authority!="manager" and authority!="ceo"):
+            self.employeeBox.addItem(nameData)
+            return
         r,cookie=connector.get("Somchai/get_allUser",cookie=self.cookie)
         if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
             print("no employee yet")
