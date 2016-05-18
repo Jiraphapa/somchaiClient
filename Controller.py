@@ -100,7 +100,20 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
 
     def doProfile(self):
         if self.profileWindow is None:
-            self.profileWindow = profileForm(self.cookie)
+            r,cookie=connector.get("Somchai/Profile/getProfile",cookie=self.cookie)
+            if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+                print("no yet")
+            else:
+                profileData = json.loads(r.text)
+                print(profileData)
+                self.profileWindow = profileForm(self.cookie)
+                self.profileWindow.header_label.setText(profileData['fullName'].partition(' ')[0])
+                self.profileWindow.nametag.setText(profileData['fullName'])
+                self.profileWindow.emailtag.setText(profileData['email'])
+                self.profileWindow.phonetag.setText(profileData['phone'])
+                self.profileWindow.postag.setText(profileData['position'])
+                self.profileWindow.deptag.setText(profileData['department'])
+
         self.profileWindow.show()
 
     def doReserveShow(self):
@@ -121,7 +134,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
     def doTodo(self,event):
         print("before todo " + str(self.cookie))
         if self.todoWindow is None:
-             self.todoWindow = FullTodoForm(self.cookie)
+             self.todoWindow = FullTodoForm(self.cookie,self)
         self.todoWindow.show()
 
     def closeEvent(self, *args, **kwargs):
@@ -138,6 +151,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
 
 
     def queryTodo(self):
+        self.list_widget.clear()
         count=6
         #query todoList for that user
         r,cookie=connector.get("Somchai/Todo/getTodo",cookie=self.cookie)
@@ -188,8 +202,9 @@ class ChatRoomForm(QtWidgets.QWidget, chatRoom.Ui_Form):
 
 
 class FullTodoForm(QtWidgets.QWidget,FullTodo.Ui_Form ):
-    def __init__(self,cookie, parent=None):
+    def __init__(self,cookie, mini,parent=None):
         QtWidgets.QWidget.__init__(self,parent)
+        self.mini=mini
         self.setupUi(self)
         self.cookie=cookie
         print("todo "+ str(self.cookie))
@@ -213,6 +228,8 @@ class FullTodoForm(QtWidgets.QWidget,FullTodo.Ui_Form ):
             return False
         return True
     def queryTodo(self):
+        self.mini.queryTodo()
+        self.tasksList.clear()
         #query todoList for that user
         r,cookie=connector.get("Somchai/Todo/getTodo",cookie=self.cookie)
         if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
@@ -237,6 +254,7 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
         QtWidgets.QWidget.__init__(self,parent)
         self.cookie=cookie
         self.setupUi(self)
+        self.reserved_list.setStyleSheet("color:white;font-size:15px;")
         self.setWindowOpacity(0.98)
         self.reserveButton.clicked.connect(self.showForm)
         self.reserveForm=None
@@ -251,16 +269,21 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
       def showForm(self):
           if self.reserveForm is None:
              self.reserveForm=ReserveForm(self.cookie)
+             self.reserveForm.reserveButton.clicked.connect(self.updateReserve)
           self.reserveForm.show()
+      def updateReserve(self):
+          self.reserved_list.clear()
+          self.showReserved()
       def showReserved(self):
-        
-        r,cookie=connector.get("Somchai/Meeting/getRoom",cookie=self.cookie)
-        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
-            print("empty")
-        else:
-            reserveData = json.loads(r.text)
-            for item in reserveData:
-                self.reserved_list.addItem(reserveData[item])
+        temp=""
+        r,cookie=connector.get("Somchai/Meeting/getReserve",cookie=self.cookie)
+        reserveData = json.loads(r.text)
+        print(reserveData)
+        for reserve in reserveData:
+            for item in reserveData[reserve]:
+                temp+=reserveData[reserve][item]+" "
+            self.reserved_list.addItem(temp)
+            temp=""
 
 
 class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):

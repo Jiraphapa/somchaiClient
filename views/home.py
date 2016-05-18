@@ -80,6 +80,7 @@ class Ui_Form(object):
         self.todo_label.setAlignment(QtCore.Qt.AlignCenter)
         self.todo_label.setObjectName("todo_label")
         self.list_widget = QtWidgets.QListWidget(Form)
+        self.list_widget.setStyleSheet("color:white;font-size:16px;")
         self.list_widget.setGeometry(QtCore.QRect(20, 280, 161, 131))
         self.list_widget.setObjectName("list_widget")
         # self.background_inner = QtWidgets.QLabel(Form)
