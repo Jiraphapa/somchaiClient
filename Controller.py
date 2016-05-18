@@ -1,8 +1,12 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
-from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile
+from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,createport,selectroom,startroom
 import json
+import random
+import threading
+import socket
+import time
 from Connector import Connector
 import sys
 #placeholder for user data
@@ -208,21 +212,170 @@ class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
         self.joinButton.clicked.connect(self.invokeChat)
-        self.chatRoomWindow=None
+        self.createButton.clicked.connect(self.invokePort)
+        #self.chatRoomWindow=None
       def invokeChat(self):
           self.hide()
-          if self.chatRoomWindow is None:
-            self.chatRoomWindow=ChatRoomForm(self.cookie)
-          self.chatRoomWindow.show()
-
-
-class ChatRoomForm(QtWidgets.QWidget, chatRoom.Ui_Form):
-     def __init__(self, cookie,parent=None):
-        self.cookie=cookie
+          #if self.chatRoomWindow is None:
+          self.chatRoomWindow=ChatRoomSelect(self.cookie)
+      def invokePort(self):
+          self.hide()
+          #if self.chatRoomWindow is None:
+          self.chatRoomWindow=CreatingRoom(self.cookie)
+#################################
+# Open a Server class
+class CreatingRoom(QtWidgets.QWidget, createport.create_server):
+    def __init__(self, cookie, parent=None):
+        self.cookie = cookie
         QtWidgets.QWidget.__init__(self, parent)
-        self.setupUi(self)
+        self.setup(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
+        self.accept_button.clicked.connect(self.create)
+
+    def create(self):
+        # ---- This is for Public IP address ---- #
+        # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # s.connect(("google.com", 80))
+        # s.getsockname() ---- This return Public IPADDRESS + Public PORT (where is not require)
+        self.form.hide()
+        self.port = random.randint(1000,9999)
+        self.mcli = self.input_box.text()
+        self.rname = self.input2_box.text()
+        self.startServer()
+
+    def startServer(self):
+        self.__iniserver = startroom.create_room(self.mcli, self.host, self.port)
+        self.addroom()
+
+        # ---- IP, Port, and Room Name is kept into database for later query ---- #
+    def addroom(self):
+        IP = self.host
+        PORT = self.port
+        NAME = self.rname
+        data = {'roomIP': IP, 'roomPort': PORT, 'roomName': NAME}
+        url = "Somchai/Chat/createChat"
+        # post and return user
+        result, cookies = connector.postWithData(url, data,cookie=self.cookie)
+        # --------------------------------------- #
+
+# Select avaliable Room when a Server is created
+class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
+    def __init__(self, cookie, parent=None):
+        self.cookie = cookie
+        QtWidgets.QWidget.__init__(self, parent)
+        self.setup_ui(self)
+        self.roomlist=[]
+        # --- invoke method to get room --- #
+        self.queryRoom()
+        #if (self.listWidget.count() > 0):
+        #    self.listWidget.setCurrentRow(0)
+        # --- ------------------------- --- #
+        self.chat_button.clicked.connect(self.getdata)
+
+        self.setWindowOpacity(0.98)
+        self.setStyleSheet("background-color:#121317;")
+
+    def queryRoom(self):
+        # query avaliable Room
+        r, cookie = connector.get("Somchai/Chat/getChat", cookie=self.cookie)
+        temp=""
+        roomData = json.loads(r.text)
+        print(roomData)
+        for reserve in roomData:
+            #for item in roomData[reserve]:
+                #temp+=roomData[reserve][item]+" "
+            self.roomlist.append(roomData[reserve])
+            temp+=roomData[reserve]['chatName']+" "
+            temp+=roomData[reserve]['owner']+" "
+            temp+=roomData[reserve]['chatIP']+" "
+            temp+=roomData[reserve]['chatPort']
+            self.listWidget.addItem(temp)
+            temp=""
+
+    def isDict(self, mes):
+        try:
+            dic = json.loads(mes)
+        except ValueError as e:
+            return False
+        return True
+    def getdata(self):
+        if(self.listWidget.count() > 0):
+            #serverdetail=self.listWidget.currentItem().text()
+            content=self.roomlist[self.listWidget.currentRow()]
+            self.cIP = {'roomIP': content['chatIP']}
+            self.cPORT = {'roomPort': content['chatPort']}
+            self.connection()
+
+    def connection(self):
+        # Receieve Clicked Widget Data (IP, Port, and Name)
+
+        self.enter = enterChat(self.cookie, self.cIP, self.cPORT) # send(IP,PORT) to start chat
+        self.enter.show()
+
+
+class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
+    def __init__(self, cookie, ip, port, parent = None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.cookie = cookie
+        self.useIP = ip
+        self.usePORT = port
+        self.setupUi(self)
+        self.messageEdit.returnPressed.connect(self.sendMsg)
+
+    def connection(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.sock.connect((self.useIP,self.usePORT))
+            self.show()
+        except:
+            warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
+            warning.show()
+            self.close()
+
+        threading.Thread(target = self.recvmessage).start()
+
+    def sendMsg(self):
+        while True:
+            self.msg = self.messageEdit.text()
+            self.messageEdit.clear()
+            self.msg = self.encrypt(self.msg)
+            self.msg = self.msg.encode("utf-8")
+            self.sock.send(self.msg)
+
+    def recvMsg(self):
+        while True:
+            time.sleep(0.050)
+            self.rec = self.sock.recv(4096)
+            self.rec = self.rec.decode("utf-8")
+            self.rec = self.decrypt(self.rec)
+            # need to implement which user send msg
+            self.messageList.appendPlainText("<" + self.useIP + ">" + self.rec)
+
+    def encrypt(self, word):
+        tempword = ""
+        count = 3
+        for i in word:
+            if count == 6:
+                count = 3
+            tempword += chr(ord(i) - count)
+            count += 1
+        return tempword
+
+    def decrypt(self, word):
+        tempword = ""
+        count = 3
+        for i in word:
+            if count == 6:
+                count = 3
+            tempword += chr(ord(i) + count)
+            count += 1
+        return tempword
+
+    # for looking when new user enter
+    def onlineuser(self):
+        self.onlineList
+#################################
 
 
 class FullTodoForm(QtWidgets.QWidget,FullTodo.Ui_Form ):

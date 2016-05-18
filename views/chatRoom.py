@@ -22,6 +22,7 @@ class Ui_Form(object):
         Form.setFont(font)
         self.messageEdit = QtWidgets.QLineEdit(Form)
         self.messageEdit.setGeometry(QtCore.QRect(180, 370, 241, 41))
+        # Bind Enter-key to send
         font = QtGui.QFont()
         font.setFamily("Helvetica")
         font.setPointSize(24)
