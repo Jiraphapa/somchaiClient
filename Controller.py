@@ -11,7 +11,7 @@ authority=None
 nameData=None
 connector=Connector()
 # login page
-class Form1(QtWidgets.QWidget, login.Ui_Form):
+class loginWindow(QtWidgets.QWidget, login.Ui_Form):
 
     def __init__(self, parent=None):
         self.invalidCount=0
@@ -42,7 +42,7 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
             globalUserData=userData
             # setup home
             if self.window2 is None:
-                self.window2 = Form2(userData, cookies)
+                self.window2 = homeWindow(userData, cookies)
                 self.window2.show()
                 self.close()
             else:
@@ -88,7 +88,7 @@ class Form1(QtWidgets.QWidget, login.Ui_Form):
 
 
 # home page
-class Form2(QtWidgets.QWidget, home.Ui_Form):
+class homeWindow(QtWidgets.QWidget, home.Ui_Form):
     def __init__(self, user, cookie, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -112,6 +112,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
         self.queryTodo()
         r,cookie=connector.get("Somchai/Profile/getProfile",cookie=self.cookie)
         profileData = json.loads(r.text)
+        global authority
         if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
             authority=None
         else:
@@ -143,7 +144,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
 
     def doHelp(self):
         if self.helpWindow is None:
-            self.helpWindow = Form3()
+            self.helpWindow = HelpWindow()
         self.helpWindow.show()
 
     def doChat(self):
@@ -191,7 +192,7 @@ class Form2(QtWidgets.QWidget, home.Ui_Form):
 
 
 # help page - finishes
-class Form3(QtWidgets.QWidget, instruction.Ui_Form):
+class HelpWindow(QtWidgets.QWidget, instruction.Ui_Form):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -365,6 +366,8 @@ class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
     def fillEmployee(self):
         #non-authority is only allowed to assign work to themselves
         if authority==None or (authority!="manager" and authority!="ceo"):
+            print(authority)
+            print("kak")
             self.employeeBox.addItem(nameData)
             return
         r,cookie=connector.get("Somchai/get_allUser",cookie=self.cookie)
@@ -403,6 +406,6 @@ if __name__ == '__main__':
 
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    window = Form1()
+    window = loginWindow()
     window.show()
     sys.exit(app.exec_())
