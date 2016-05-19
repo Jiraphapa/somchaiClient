@@ -268,7 +268,7 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
         # s.connect(("google.com", 80))
         # s.getsockname() ---- This return Public IPADDRESS + Public PORT (where is not require)
         self.form.hide()
-        self.port = 8001
+        self.port = 8005
         self.mcli = self.input_box.text()
         self.rname = self.input2_box.text()
         self.startServer()
@@ -361,20 +361,31 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection()
 
+    def closeEvent(self, QCloseEvent):
+        hehe = "out:" + str(self.user.get("first_name")) + " " + str(self.user.get("last_name"))
+        hehe = hehe.encode("utf-8")
+        self.sock.send(hehe)
+        self.sock.close()
+
     def connection(self):
-        try:
-            self.sock.connect((self.useIP, int(self.usePORT)))
-            self.sock.send(str(self.user.firstName) + " " + str(self.user.lastName))
-        except:
-            warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
-            #warning.show()
-            self.close()
+
+        self.sock.connect((self.useIP, int(self.usePORT)))
+        data = self.sock.recv(1024)
+        data = data.decode('utf-8')
+        if data == "ready":
+            hehe = str(self.user.get("first_name")) + " " + str(self.user.get("last_name"))
+            hehe = hehe.encode("utf-8")
+            self.sock.send(hehe)
+        #except:
+        #    warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
+        #    #warning.show()
+        #    self.close()
         threading.Thread(target=self.recvMsg).start()
 
     def sendMsg(self):
-        self.msg = self.messageEdit.text()
+        self.msg = str(self.user.get("first_name")) + " " + str(self.user.get("last_name"))+":" + self.messageEdit.text()
         self.messageEdit.clear()
-        self.msg = self.encrypt(self.msg)
+        #self.msg = self.encrypt(self.msg)
         self.msg = self.msg.encode("utf-8")
         self.sock.send(self.msg)
 
@@ -382,12 +393,20 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         while True:
             time.sleep(0.050)
             try:
-                self.rec = self.sock.recv(4096)
+                self.rec = self.sock.recv(1024)
                 self.rec = self.rec.decode("utf-8")
-                self.rec = self.decrypt(self.rec)
-                # need to implement which user send msg
-                temp="<" + self.useIP + ">" + self.rec
-                self.messageList.addItem(temp)
+                if "pe_pp:" in self.rec:
+                    self.onlineList.clear()
+                    r = self.rec.split(":")
+                    r.remove("pe_pp")
+                    for i in r:
+                        self.onlineList.addItem(i)
+                else:
+                    #self.rec = self.decrypt(self.rec)
+                    # need to implement which user send msg
+                    r = self.rec.split(":")
+                    temp="<" + r[0] + ">" + r[1]
+                    self.messageList.addItem(temp)
             except ConnectionError as e:
                 print("connection reset")
 
