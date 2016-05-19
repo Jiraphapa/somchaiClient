@@ -17,6 +17,9 @@ class User:
         self.privillege = privillege
         self.department = department
 
+    def get_fullName(self):
+        return self.get_firstName() + " " + self.get_lastName()
+
 
     def get_firstName(self):
         return self.firstName
@@ -46,5 +49,7 @@ class User:
         t.set_TodoList(description, a)
         return t
 
+    def __str__(self):
+        return self.get_fullName() + " " + self.email + " " + self.get_phone() + " " + self.get_department() + " " + self.get_privillege()
 
 

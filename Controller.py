@@ -11,11 +11,11 @@ import PyQt5.QtWidgets as QtWidgets
 import startroom
 from Connector import Connector
 from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,allEmployee,createport,selectroom
-
+from models import user, TodoList, Reservation
 #placeholder for user data
 globalUserData=None
 authority=None
-nameData=None
+global nameData
 connector=Connector()
 # login page
 class loginWindow(QtWidgets.QWidget, login.Ui_Form):
@@ -46,10 +46,22 @@ class loginWindow(QtWidgets.QWidget, login.Ui_Form):
             self.dialog(result.text)
         else:
             userData = json.loads(result.text)
-            globalUserData=userData
+
+            fullname = userData.get("name")
+            firstName = fullname.split(" ")[0]
+            lastName = fullname.split(" ")[1]
+            email = userData.get("email")
+            phone = userData.get("phone")
+            department = userData.get("department")
+            position = userData.get("position")
+            p = user.User()
+            p.setUser(firstName=firstName, lastName=lastName, email=email, phone=phone, department=department, privillege=position)
+            global globalUserData
+            globalUserData = p
+            print(globalUserData)
             # setup home
             if self.window2 is None:
-                self.window2 = homeWindow(userData, cookies)
+                self.window2 = homeWindow(cookie=cookies)
                 self.window2.show()
                 self.close()
             else:
@@ -94,13 +106,13 @@ class loginWindow(QtWidgets.QWidget, login.Ui_Form):
             self.login.clicked()
 
 class allEmployeeForm(QtWidgets.QWidget,allEmployee.Ui_Form):
-     def __init__(self,cookie, parent=None):
+     def __init__(self, cookie, parent=None):
          self.cookie=cookie
          QtWidgets.QWidget.__init__(self, parent)
          self.setupUi(self)
 # home page
 class homeWindow(QtWidgets.QWidget, home.Ui_Form):
-    def __init__(self, user, cookie, parent=None):
+    def __init__(self, cookie, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowOpacity(0.98)
@@ -118,18 +130,13 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
         self.reserveShow=None
         self.profileWindow=None
         self.employeeWindow=None
-        self.user = user
         self.cookie = cookie
-        print("con " + str(self.cookie))
         self.queryTodo()
-        r,cookie=connector.get("Somchai/Profile/getProfile",cookie=self.cookie)
-        profileData = json.loads(r.text)
         global authority
-        if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
-            authority=None
-        else:
-            authority=profileData['position'].lower()
-            print(authority)
+        global globalUserData
+        print(globalUserData)
+        authority = globalUserData.get_privillege().lower()
+        print(authority)
     def doProfile(self):
         if self.profileWindow is None:
             r,cookie=connector.get("Somchai/Profile/getProfile",cookie=self.cookie)
@@ -169,8 +176,6 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
             self.employeeWindow.show()
 
-
-
     def doReserveShow(self):
         if self.reserveShow is None:
             self.reserveShow = ReserveShow(self.cookie)
@@ -183,7 +188,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
     def doChat(self):
          if self.chatopWindow is None:
-             self.chatopWindow = ChatOptionForm(self.cookie, user=self.user)
+             self.chatopWindow = ChatOptionForm(self.cookie)
              if authority==None or (authority!="manager" and authority!="ceo"):
                  self.chatopWindow.createButton.setDisabled(True)
          self.chatopWindow.show()
@@ -234,10 +239,9 @@ class HelpWindow(QtWidgets.QWidget, instruction.Ui_Form):
 
 #chat option
 class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
-      def __init__(self,cookie,user, parent=None):
+      def __init__(self,cookie, parent=None):
         QtWidgets.QWidget.__init__(self,parent)
-        self.cookie=cookie
-        self.user = user
+        self.cookie = cookie
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
@@ -247,7 +251,7 @@ class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
       def invokeChat(self):
           self.hide()
           #if self.chatRoomWindow is None:
-          self.chatRoomWindow=ChatRoomSelect(self.cookie, user=self.user)
+          self.chatRoomWindow=ChatRoomSelect(self.cookie)
           self.chatRoomWindow.show()
       def invokePort(self):
           self.hide()
@@ -293,10 +297,9 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
 
 # Select avaliable Room when a Server is created
 class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
-    def __init__(self, cookie, user, parent=None):
+    def __init__(self, cookie, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.cookie = cookie
-        self.user = user
         self.setup_ui(self)
         self.roomlist=[]
         # --- invoke method to get room --- #
@@ -348,26 +351,26 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
     def connection(self):
         # Receieve Clicked Widget Data (IP, Port, and Name)
 
-        self.enter = enterChat(user=self.user, cookie=self.cookie, ip=self.cIP, port=int(self.cPORT)) # send(IP,PORT) to start chat
+        self.enter = enterChat( cookie=self.cookie, ip=self.cIP, port=int(self.cPORT)) # send(IP,PORT) to start chat
         self.enter.show()
 
 
 class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
-    def __init__(self, user, cookie, ip, port, parent=None):
+    def __init__(self, cookie, ip, port, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setStyleSheet("background-color:#0cc7d6;")
         self.setWindowOpacity(0.94)
-        self.user = user
         self.cookie = cookie
         self.useIP = ip
         self.usePORT = port
         self.setupUi(self)
         self.messageEdit.returnPressed.connect(self.sendMsg)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        global globalUserData
         self.connection()
 
     def closeEvent(self, QCloseEvent):
-        hehe = "out:" + str(self.user.get("first_name")) + " " + str(self.user.get("last_name"))
+        hehe = "out:" + globalUserData.get_firstName() + " " + globalUserData.get_lastName()
         hehe = hehe.encode("utf-8")
         self.sock.send(hehe)
         self.sock.close()
@@ -378,7 +381,7 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         data = self.sock.recv(1024)
         data = data.decode('utf-8')
         if data == "ready":
-            hehe = str(self.user.get("first_name")) + " " + str(self.user.get("last_name"))
+            hehe = globalUserData.get_firstName() + " " + globalUserData.get_lastName()
             hehe = hehe.encode("utf-8")
             self.sock.send(hehe)
         #except:
@@ -388,7 +391,7 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         threading.Thread(target=self.recvMsg).start()
 
     def sendMsg(self):
-        self.msg = str(self.user.get("first_name")) + " " + str(self.user.get("last_name"))+":" + self.messageEdit.text()
+        self.msg = globalUserData.get_firstName() + " " + globalUserData.get_lastName()+":" + self.messageEdit.text()
         self.messageEdit.clear()
         #self.msg = self.encrypt(self.msg)
         self.msg = self.msg.encode("utf-8")
