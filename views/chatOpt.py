@@ -46,6 +46,7 @@ class Ui_Form(object):
         self.display = QtWidgets.QPlainTextEdit(Form)
         self.display.setFixedHeight(50)
         self.display.setReadOnly(True)
+        self.display.setStyleSheet("color:pink;")
         self.display.setGeometry(QtCore.QRect(33, 190, 311, 65))
         self.display.setObjectName("information")
         self.information()

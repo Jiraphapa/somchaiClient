@@ -259,7 +259,7 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
         QtWidgets.QWidget.__init__(self, parent)
         self.setup(self)
         self.setWindowOpacity(0.98)
-        self.setStyleSheet("background-color:#121317;")
+        self.setStyleSheet("background-color:#121317;color:pink;")
         self.accept_button.clicked.connect(self.create)
 
     def create(self):
@@ -352,6 +352,8 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
 class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
     def __init__(self, user, cookie, ip, port, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.setStyleSheet("background-color:#0cc7d6;")
+        self.setWindowOpacity(0.94)
         self.user = user
         self.cookie = cookie
         self.useIP = ip
