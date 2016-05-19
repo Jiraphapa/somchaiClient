@@ -14,7 +14,7 @@ import PyQt5.QtWidgets as QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(344, 367)
+        Form.resize(344, 374)
         self.reserve_label = QtWidgets.QLabel(Form)
         self.reserve_label.setGeometry(QtCore.QRect(30, 20, 291, 41))
         font = QtGui.QFont()
@@ -31,7 +31,7 @@ class Ui_Form(object):
         self.reserved_list.setObjectName("reserved_list")
         self.reserveButton = QtWidgets.QPushButton(Form)
         self.reserveButton.setStyleSheet("background-color:#f8e71d;")
-        self.reserveButton.setGeometry(QtCore.QRect(70, 300, 201, 61))
+        self.reserveButton.setGeometry(QtCore.QRect(20, 310, 141, 61))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
         font.setPointSize(18)
@@ -39,7 +39,16 @@ class Ui_Form(object):
         font.setBold(True)
         self.reserveButton.setFont(font)
         self.reserveButton.setObjectName("reserveButton")
-
+        self.cancelButton = QtWidgets.QPushButton(Form)
+        self.cancelButton.setStyleSheet("color:#f8e71d;")
+        self.cancelButton.setGeometry(QtCore.QRect(180, 310, 141, 61))
+        font = QtGui.QFont()
+        font.setFamily("Helvetica")
+        font.setPointSize(18)
+        font.setWeight(75)
+        font.setBold(True)
+        self.cancelButton.setFont(font)
+        self.cancelButton.setObjectName("cancelButton")
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -47,5 +56,6 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.reserve_label.setText(_translate("Form", "RESERVED LIST"))
-        self.reserveButton.setText(_translate("Form", "RESERVE A ROOM"))
+        self.reserveButton.setText(_translate("Form", "RESERVE"))
+        self.cancelButton.setText(_translate("Form", "REMOVE"))
 

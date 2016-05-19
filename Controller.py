@@ -239,7 +239,8 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
         # s.connect(("google.com", 80))
         # s.getsockname() ---- This return Public IPADDRESS + Public PORT (where is not require)
         self.form.hide()
-        self.port = random.randint(1000,9999)
+        self.port = 8001
+        print(self.port)
         self.mcli = self.input_box.text()
         self.rname = self.input2_box.text()
         self.startServer()
@@ -304,13 +305,15 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
             #serverdetail=self.listWidget.currentItem().text()
             content=self.roomlist[self.listWidget.currentRow()]
             self.cIP = content['chatIP']
+            print(self.cIP)
             self.cPORT = content['chatPort']
+            print(self.cPORT)
             self.connection()
 
     def connection(self):
         # Receieve Clicked Widget Data (IP, Port, and Name)
 
-        self.enter = enterChat(self.cookie, self.cIP, self.cPORT) # send(IP,PORT) to start chat
+        self.enter = enterChat(self.cookie, self.cIP, int(self.cPORT)) # send(IP,PORT) to start chat
         self.enter.show()
 
 
@@ -324,34 +327,36 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         self.messageEdit.returnPressed.connect(self.sendMsg)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection()
-    def connection(self):
 
+    def connection(self):
         try:
-            self.sock.connect((self.useIP,self.usePORT))
-            #self.show()
+            self.sock.connect((self.useIP, int(self.usePORT)))
         except:
             warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
             #warning.show()
             self.close()
-
-        threading.Thread(target = self.recvMsg()).start()
+        threading.Thread(target=self.recvMsg).start()
 
     def sendMsg(self):
-        while True:
-            self.msg = self.messageEdit.text()
-            self.messageEdit.clear()
-            self.msg = self.encrypt(self.msg)
-            self.msg = self.msg.encode("utf-8")
-            self.sock.send(self.msg)
+
+        self.msg = self.messageEdit.text()
+        self.messageEdit.clear()
+        self.msg = self.encrypt(self.msg)
+        self.msg = self.msg.encode("utf-8")
+        self.sock.send(self.msg)
 
     def recvMsg(self):
         while True:
             time.sleep(0.050)
-            self.rec = self.sock.recv(4096)
-            self.rec = self.rec.decode("utf-8")
-            self.rec = self.decrypt(self.rec)
-            # need to implement which user send msg
-            self.messageList.appendPlainText("<" + self.useIP + ">" + self.rec)
+            try:
+                self.rec = self.sock.recv(4096)
+                self.rec = self.rec.decode("utf-8")
+                self.rec = self.decrypt(self.rec)
+                # need to implement which user send msg
+                temp="<" + self.useIP + ">" + self.rec
+                self.messageList.addItem(temp)
+            except ConnectionError as e:
+                print("connection reset")
 
     def encrypt(self, word):
         tempword = ""
@@ -432,7 +437,9 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
         QtWidgets.QWidget.__init__(self,parent)
         self.cookie=cookie
         self.setupUi(self)
+        self.list=[]
         self.reserved_list.setStyleSheet("color:white;font-size:15px;")
+        self.cancelButton.clicked.connect(self.cancelMeeting)
         self.setWindowOpacity(0.98)
         self.reserveButton.clicked.connect(self.showForm)
         self.reserveForm=None
@@ -440,6 +447,16 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
         if authority==None or (authority!="manager" and authority!="ceo"):
             self.reserveButton.setDisabled(True)
         self.showReserved()
+      def cancelMeeting(self):
+        if(self.reserved_list.count()>0):
+            detail=self.reserved_list.currentItem().text()
+            data=self.list[self.reserved_list.currentRow()]
+            print(data)
+            url = "Somchai/Meeting/deleteReserve"
+            listItems=self.reserved_list.selectedItems()
+            for item in listItems:
+                self.reserved_list.takeItem(self.reserved_list.row(item))
+            result, cookies = connector.postWithData(url, data)
       def isDict(self, mes):
         try:
             dic = json.loads(mes)
@@ -460,8 +477,13 @@ class ReserveShow(QtWidgets.QWidget,reserveShow.Ui_Form ):
         reserveData = json.loads(r.text)
         print(reserveData)
         for reserve in reserveData:
-            for item in reserveData[reserve]:
-                temp+=reserveData[reserve][item]+" "
+            temp+=reserveData[reserve]['topic']+" "
+            temp+=reserveData[reserve]['room']+" "
+            temp+=reserveData[reserve]['time']+" "
+            temp+=reserveData[reserve]['owner']+" "
+            ##
+            self.list.append(reserveData[reserve])
+            ##
             self.reserved_list.addItem(temp)
             temp=""
 

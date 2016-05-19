@@ -1,10 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+import urllib
 import socket
 
 #Can address Privileges to create room here:
 class create_server(object):
     def setup(self,Form):
-        self.host = socket.gethostbyname(socket.gethostname())
+        self.host = urllib.request.urlopen('http://ip.42.pl/raw').read().decode('utf-8')
+        print(self.host)
         self.form = Form
         self.form.setObjectName("Form")
         self.form.resize(173, 173)

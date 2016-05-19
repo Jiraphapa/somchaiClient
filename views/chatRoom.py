@@ -35,7 +35,7 @@ class Ui_Form(object):
         self.onlineList.setStyleSheet("background-color:#23252c;")
         self.onlineList.setGeometry(QtCore.QRect(20, 70, 151, 341))
         self.onlineList.setObjectName("onlineList")
-        self.messageList = QtWidgets.QListView(Form)
+        self.messageList = QtWidgets.QListWidget(Form)
         self.messageList.setStyleSheet("background-color:#23252c;")
         self.messageEdit.setStyleSheet("background-color:white;")
         self.messageList.setGeometry(QtCore.QRect(180, 20, 241, 341))
