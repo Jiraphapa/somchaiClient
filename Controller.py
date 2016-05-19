@@ -1,14 +1,14 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
-from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,createport,selectroom,startroom
+from views import login, Instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,createport,selectroom,startroom
 import json
 import random
 import threading
 import socket
 import time
 from Connector import Connector
-import sys
+import sys, os
 #placeholder for user data
 globalUserData=None
 authority=None
@@ -168,7 +168,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
         r, self.cookie = connector.post("Somchai/logout", cookie=self.cookie)
         print(r.text)
-        sys.exit()
+        os._exit()
 
     def isDict(self, mes):
         try:
@@ -187,7 +187,6 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
             print("no todo yet")
         else:
             todoData = json.loads(r.text)
-            print(todoData)
             for todo in todoData:
                 self.list_widget.addItem(todoData[todo])
                 count-=1
@@ -196,7 +195,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
 
 # help page - finishes
-class HelpWindow(QtWidgets.QWidget, instruction.Ui_Form):
+class HelpWindow(QtWidgets.QWidget, Instruction.Ui_Form):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -218,10 +217,12 @@ class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
           self.hide()
           #if self.chatRoomWindow is None:
           self.chatRoomWindow=ChatRoomSelect(self.cookie)
+          self.chatRoomWindow.show()
       def invokePort(self):
           self.hide()
           #if self.chatRoomWindow is None:
           self.chatRoomWindow=CreatingRoom(self.cookie)
+          self.chatRoomWindow.show()
 #################################
 # Open a Server class
 class CreatingRoom(QtWidgets.QWidget, createport.create_server):
@@ -240,7 +241,6 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
         # s.getsockname() ---- This return Public IPADDRESS + Public PORT (where is not require)
         self.form.hide()
         self.port = 8001
-        print(self.port)
         self.mcli = self.input_box.text()
         self.rname = self.input2_box.text()
         self.startServer()
@@ -263,8 +263,8 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
 # Select avaliable Room when a Server is created
 class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
     def __init__(self, cookie, parent=None):
-        self.cookie = cookie
         QtWidgets.QWidget.__init__(self, parent)
+        self.cookie = cookie
         self.setup_ui(self)
         self.roomlist=[]
         # --- invoke method to get room --- #
@@ -280,19 +280,22 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
     def queryRoom(self):
         # query avaliable Room
         r, cookie = connector.get("Somchai/Chat/getChat", cookie=self.cookie)
-        temp=""
-        roomData = json.loads(r.text)
-        print(roomData)
-        for reserve in roomData:
-            #for item in roomData[reserve]:
-                #temp+=roomData[reserve][item]+" "
-            self.roomlist.append(roomData[reserve])
-            temp+=roomData[reserve]['chatName']+" "
-            temp+=roomData[reserve]['owner']+" "
-            temp+=roomData[reserve]['chatIP']+" "
-            temp+=roomData[reserve]['chatPort']
-            self.listWidget.addItem(temp)
+        if(r.text == "no room"):
+            self.listWidget.addItem("no room")
+            return 0
+        else:
             temp=""
+            roomData = json.loads(r.text)
+            for reserve in roomData:
+                #for item in roomData[reserve]:
+                    #temp+=roomData[reserve][item]+" "
+                self.roomlist.append(roomData[reserve])
+                temp+=roomData[reserve]['chatName']+" "
+                temp+=roomData[reserve]['owner']+" "
+                temp+=roomData[reserve]['chatIP']+" "
+                temp+=roomData[reserve]['chatPort']
+                self.listWidget.addItem(temp)
+                temp=""
 
     def isDict(self, mes):
         try:
@@ -300,14 +303,14 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
         except ValueError as e:
             return False
         return True
+
+
     def getdata(self):
         if(self.listWidget.count() > 0):
             #serverdetail=self.listWidget.currentItem().text()
             content=self.roomlist[self.listWidget.currentRow()]
             self.cIP = content['chatIP']
-            print(self.cIP)
             self.cPORT = content['chatPort']
-            print(self.cPORT)
             self.connection()
 
     def connection(self):
@@ -523,6 +526,25 @@ class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):
         # post and return user
          result, cookies = connector.postWithData(url, data, self.cookie)
 
+         if(result.text == "Overlapped"):
+            self.w = QtWidgets.QDialog(self)
+            layout = QtWidgets.QVBoxLayout()
+
+            # massage and button
+            massage = QtWidgets.QLabel("This room has been reserved at this time")
+
+            massage.setStyleSheet("color:red;font-size:18px;")
+            bt = QtWidgets.QPushButton("OK")
+            #bt.clicked.connect(self.closeCaution)
+            bt.setStyleSheet("font-size:18px;color:white;")
+            # add massage to layout
+            layout.addWidget(massage)
+            layout.addWidget(bt)
+
+            # set layout to widget
+            self.w.setLayout(layout)
+            self.w.show()
+
 
 class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
     def __init__(self, cookie,parent=None):
@@ -580,7 +602,6 @@ class profileForm(QtWidgets.QWidget,profile.Ui_Form):
 
 if __name__ == '__main__':
 
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     window = loginWindow()
     window.show()
