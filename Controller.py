@@ -1,14 +1,17 @@
-import PyQt5.QtCore as QtCore
-import PyQt5.QtGui as QtGui
-import PyQt5.QtWidgets as QtWidgets
-from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,allEmployee,createport,selectroom,startroom
 import json
-import random
-import threading
+import os
 import socket
+import sys
+import threading
 import time
+
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
+
+import startroom
 from Connector import Connector
-import sys, os
+from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,allEmployee,createport,selectroom
+
 #placeholder for user data
 globalUserData=None
 authority=None
