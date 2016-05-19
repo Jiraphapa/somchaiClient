@@ -1,7 +1,7 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
-from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,createport,selectroom,startroom
+from views import login, instruction, home, chatOpt, chatRoom, FullTodo, reserveShow, reserveForm, assignment, profile,allEmployee,createport,selectroom,startroom
 import json
 import random
 import threading
@@ -90,7 +90,11 @@ class loginWindow(QtWidgets.QWidget, login.Ui_Form):
             print("in")
             self.login.clicked()
 
-
+class allEmployeeForm(QtWidgets.QWidget,allEmployee.Ui_Form):
+     def __init__(self,cookie, parent=None):
+         self.cookie=cookie
+         QtWidgets.QWidget.__init__(self, parent)
+         self.setupUi(self)
 # home page
 class homeWindow(QtWidgets.QWidget, home.Ui_Form):
     def __init__(self, user, cookie, parent=None):
@@ -110,6 +114,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
         self.todoWindow=None
         self.reserveShow=None
         self.profileWindow=None
+        self.employeeWindow=None
         self.user = user
         self.cookie = cookie
         print("con " + str(self.cookie))
@@ -138,8 +143,30 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
                 self.profileWindow.phonetag.setText(profileData['phone'])
                 self.profileWindow.postag.setText(profileData['position'])
                 self.profileWindow.deptag.setText(profileData['department'])
+                self.profileWindow.show()
+        if self.employeeWindow is None:
+            temp=""
+            self.employeeWindow=allEmployeeForm(self.cookie)
+            self.employeeWindow.setStyleSheet("background-color:white;")
+            if authority!=None and (authority=="manager" or authority=="ceo"):
+                r,cookie=connector.get("Somchai/get_allUserData",cookie=self.cookie)
+                if not self.isDict(r.text):  # check if result.text can change back to dict, if not then its not a json
+                    print("no yet")
+                else:
+                    allData = json.loads(r.text)
+                    print(allData)
+                    for pack in allData:
+                        temp+=allData[pack]['Name']+" "
+                        temp+=": "+allData[pack]['position']+" "
+                        temp+=allData[pack]['department']+" "
+                        temp+=allData[pack]['email']
+                        temp+=allData[pack]['phone']
+                        self.employeeWindow.employeeList.addItem(temp)
+                        temp=""
 
-        self.profileWindow.show()
+            self.employeeWindow.show()
+
+
 
     def doReserveShow(self):
         if self.reserveShow is None:
