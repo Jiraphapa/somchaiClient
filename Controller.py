@@ -8,7 +8,7 @@ import threading
 import socket
 import time
 from Connector import Connector
-import sys
+import sys, os
 #placeholder for user data
 globalUserData=None
 authority=None
@@ -180,7 +180,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
     def doChat(self):
          if self.chatopWindow is None:
-             self.chatopWindow = ChatOptionForm(self.cookie)
+             self.chatopWindow = ChatOptionForm(self.cookie, user=self.user)
              if authority==None or (authority!="manager" and authority!="ceo"):
                  self.chatopWindow.createButton.setDisabled(True)
          self.chatopWindow.show()
@@ -195,7 +195,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
         r, self.cookie = connector.post("Somchai/logout", cookie=self.cookie)
         print(r.text)
-        sys.exit()
+        os._exit()
 
     def isDict(self, mes):
         try:
@@ -214,7 +214,6 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
             print("no todo yet")
         else:
             todoData = json.loads(r.text)
-            print(todoData)
             for todo in todoData:
                 self.list_widget.addItem(todoData[todo])
                 count-=1
@@ -232,9 +231,10 @@ class HelpWindow(QtWidgets.QWidget, instruction.Ui_Form):
 
 #chat option
 class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
-      def __init__(self,cookie, parent=None):
+      def __init__(self,cookie,user, parent=None):
         QtWidgets.QWidget.__init__(self,parent)
         self.cookie=cookie
+        self.user = user
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
@@ -244,11 +244,13 @@ class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
       def invokeChat(self):
           self.hide()
           #if self.chatRoomWindow is None:
-          self.chatRoomWindow=ChatRoomSelect(self.cookie)
+          self.chatRoomWindow=ChatRoomSelect(self.cookie, user=self.user)
+          self.chatRoomWindow.show()
       def invokePort(self):
           self.hide()
           #if self.chatRoomWindow is None:
           self.chatRoomWindow=CreatingRoom(self.cookie)
+          self.chatRoomWindow.show()
 #################################
 # Open a Server class
 class CreatingRoom(QtWidgets.QWidget, createport.create_server):
@@ -267,7 +269,6 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
         # s.getsockname() ---- This return Public IPADDRESS + Public PORT (where is not require)
         self.form.hide()
         self.port = 8001
-        print(self.port)
         self.mcli = self.input_box.text()
         self.rname = self.input2_box.text()
         self.startServer()
@@ -289,9 +290,10 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
 
 # Select avaliable Room when a Server is created
 class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
-    def __init__(self, cookie, parent=None):
-        self.cookie = cookie
+    def __init__(self, cookie, user, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.cookie = cookie
+        self.user = user
         self.setup_ui(self)
         self.roomlist=[]
         # --- invoke method to get room --- #
@@ -307,19 +309,22 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
     def queryRoom(self):
         # query avaliable Room
         r, cookie = connector.get("Somchai/Chat/getChat", cookie=self.cookie)
-        temp=""
-        roomData = json.loads(r.text)
-        print(roomData)
-        for reserve in roomData:
-            #for item in roomData[reserve]:
-                #temp+=roomData[reserve][item]+" "
-            self.roomlist.append(roomData[reserve])
-            temp+=roomData[reserve]['chatName']+" "
-            temp+=roomData[reserve]['owner']+" "
-            temp+=roomData[reserve]['chatIP']+" "
-            temp+=roomData[reserve]['chatPort']
-            self.listWidget.addItem(temp)
+        if(r.text == "no room"):
+            self.listWidget.addItem("no room")
+            return 0
+        else:
             temp=""
+            roomData = json.loads(r.text)
+            for reserve in roomData:
+                #for item in roomData[reserve]:
+                    #temp+=roomData[reserve][item]+" "
+                self.roomlist.append(roomData[reserve])
+                temp+=roomData[reserve]['chatName']+" "
+                temp+=roomData[reserve]['owner']+" "
+                temp+=roomData[reserve]['chatIP']+" "
+                temp+=roomData[reserve]['chatPort']
+                self.listWidget.addItem(temp)
+                temp=""
 
     def isDict(self, mes):
         try:
@@ -327,26 +332,27 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
         except ValueError as e:
             return False
         return True
+
+
     def getdata(self):
         if(self.listWidget.count() > 0):
             #serverdetail=self.listWidget.currentItem().text()
             content=self.roomlist[self.listWidget.currentRow()]
             self.cIP = content['chatIP']
-            print(self.cIP)
             self.cPORT = content['chatPort']
-            print(self.cPORT)
             self.connection()
 
     def connection(self):
         # Receieve Clicked Widget Data (IP, Port, and Name)
 
-        self.enter = enterChat(self.cookie, self.cIP, int(self.cPORT)) # send(IP,PORT) to start chat
+        self.enter = enterChat(user=self.user, cookie=self.cookie, ip=self.cIP, port=int(self.cPORT)) # send(IP,PORT) to start chat
         self.enter.show()
 
 
 class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
-    def __init__(self, cookie, ip, port, parent = None):
+    def __init__(self, user, cookie, ip, port, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.user = user
         self.cookie = cookie
         self.useIP = ip
         self.usePORT = port
@@ -358,6 +364,7 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
     def connection(self):
         try:
             self.sock.connect((self.useIP, int(self.usePORT)))
+            self.sock.send(str(self.user.firstName) + " " + str(self.user.lastName))
         except:
             warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
             #warning.show()
@@ -365,7 +372,6 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         threading.Thread(target=self.recvMsg).start()
 
     def sendMsg(self):
-
         self.msg = self.messageEdit.text()
         self.messageEdit.clear()
         self.msg = self.encrypt(self.msg)
@@ -550,6 +556,25 @@ class ReserveForm(QtWidgets.QWidget,reserveForm.Ui_Form ):
         # post and return user
          result, cookies = connector.postWithData(url, data, self.cookie)
 
+         if(result.text == "Overlapped"):
+            self.w = QtWidgets.QDialog(self)
+            layout = QtWidgets.QVBoxLayout()
+
+            # massage and button
+            massage = QtWidgets.QLabel("This room has been reserved at this time")
+
+            massage.setStyleSheet("color:red;font-size:18px;")
+            bt = QtWidgets.QPushButton("OK")
+            #bt.clicked.connect(self.closeCaution)
+            bt.setStyleSheet("font-size:18px;color:white;")
+            # add massage to layout
+            layout.addWidget(massage)
+            layout.addWidget(bt)
+
+            # set layout to widget
+            self.w.setLayout(layout)
+            self.w.show()
+
 
 class assignForm(QtWidgets.QWidget,assignment.Ui_Form ):
     def __init__(self, cookie,parent=None):
@@ -607,7 +632,6 @@ class profileForm(QtWidgets.QWidget,profile.Ui_Form):
 
 if __name__ == '__main__':
 
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     window = loginWindow()
     window.show()

@@ -4,6 +4,7 @@ import socket
 #Create A Chat Room
 class create_room(object):
     def __init__(self, mclient, ipaddr, port):
+        self.usernameList = []
         self.PORT = port
         self.HOST = ipaddr
         self.MAX = mclient
@@ -20,6 +21,9 @@ class create_room(object):
     def recvConnection_server(self):
         while True:
             self.CON, self.CIP = self.socket.accept()
+            username = self.CON.recv(1024)
+            self.usernameList.append(username)
+            print(self.usernameList)
             self.connectionlist.append((self.CON, self.CIP))
             threading.Thread(target = self.recvMsg_server).start()
 

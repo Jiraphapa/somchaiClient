@@ -22,8 +22,7 @@ class Connector:
 
     def get(self,url,cookie=None):
         if cookie is not None:
-            r=requests.get(self.url+url,cookies=cookie)
+            r = requests.get(self.url+url, cookies=cookie)
         else:
-            r=requests.get(self.url+url)
-        return r,r.cookies
-
+            r = requests.get(self.url+url)
+        return r, r.cookies
