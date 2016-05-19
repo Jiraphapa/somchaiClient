@@ -111,6 +111,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
         self.reserveShow=None
         self.profileWindow=None
         self.user = user
+        print(self.user)
         self.cookie = cookie
         print("con " + str(self.cookie))
         self.queryTodo()
@@ -153,7 +154,7 @@ class homeWindow(QtWidgets.QWidget, home.Ui_Form):
 
     def doChat(self):
          if self.chatopWindow is None:
-             self.chatopWindow = ChatOptionForm(self.cookie)
+             self.chatopWindow = ChatOptionForm(self.cookie, user=self.user)
              if authority==None or (authority!="manager" and authority!="ceo"):
                  self.chatopWindow.createButton.setDisabled(True)
          self.chatopWindow.show()
@@ -204,9 +205,10 @@ class HelpWindow(QtWidgets.QWidget, Instruction.Ui_Form):
 
 #chat option
 class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
-      def __init__(self,cookie, parent=None):
+      def __init__(self,cookie,user, parent=None):
         QtWidgets.QWidget.__init__(self,parent)
         self.cookie=cookie
+        self.user = user
         self.setupUi(self)
         self.setWindowOpacity(0.98)
         self.setStyleSheet("background-color:#121317;")
@@ -216,7 +218,7 @@ class ChatOptionForm(QtWidgets.QWidget, chatOpt.Ui_Form):
       def invokeChat(self):
           self.hide()
           #if self.chatRoomWindow is None:
-          self.chatRoomWindow=ChatRoomSelect(self.cookie)
+          self.chatRoomWindow=ChatRoomSelect(self.cookie, user=self.user)
           self.chatRoomWindow.show()
       def invokePort(self):
           self.hide()
@@ -262,9 +264,10 @@ class CreatingRoom(QtWidgets.QWidget, createport.create_server):
 
 # Select avaliable Room when a Server is created
 class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
-    def __init__(self, cookie, parent=None):
+    def __init__(self, cookie, user, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.cookie = cookie
+        self.user = user
         self.setup_ui(self)
         self.roomlist=[]
         # --- invoke method to get room --- #
@@ -316,13 +319,14 @@ class ChatRoomSelect(QtWidgets.QWidget, selectroom.select_room):
     def connection(self):
         # Receieve Clicked Widget Data (IP, Port, and Name)
 
-        self.enter = enterChat(self.cookie, self.cIP, int(self.cPORT)) # send(IP,PORT) to start chat
+        self.enter = enterChat(user=self.user, cookie=self.cookie, ip=self.cIP, port=int(self.cPORT)) # send(IP,PORT) to start chat
         self.enter.show()
 
 
 class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
-    def __init__(self, cookie, ip, port, parent = None):
+    def __init__(self, user, cookie, ip, port, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.user = user
         self.cookie = cookie
         self.useIP = ip
         self.usePORT = port
@@ -334,6 +338,7 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
     def connection(self):
         try:
             self.sock.connect((self.useIP, int(self.usePORT)))
+            self.sock.send(str(self.user.firstName) + " " + str(self.user.lastName))
         except:
             warning = QtWidgets.QMessageBox.warning(self,"Error","Cannot connect to your host",QtWidgets.QMessageBox.Ok)
             #warning.show()
@@ -341,7 +346,6 @@ class enterChat(QtWidgets.QWidget, chatRoom.Ui_Form):
         threading.Thread(target=self.recvMsg).start()
 
     def sendMsg(self):
-
         self.msg = self.messageEdit.text()
         self.messageEdit.clear()
         self.msg = self.encrypt(self.msg)
